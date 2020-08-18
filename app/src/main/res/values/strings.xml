@@ -1,3 +1,8 @@
 <resources>
-    <string name="app_name">Search Demo</string>
+    <string name="action_open_simple_ui_sample">Open simple UI sample</string>
+    <string name="action_open_api_samples">Open API samples</string>
+
+    <string name="simple_ui_toolbar_title">Mapbox search</string>
+
+    <string name="query_hint">Where to?</string>
 </resources>

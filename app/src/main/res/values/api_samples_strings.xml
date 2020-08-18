@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="lang_kotlin">Kotlin</string>
+    <string name="lang_java">Java</string>
+
+    <string name="run_search_sample">Run search</string>
+    <string name="run_category_search_sample">Run category search</string>
+    <string name="run_reverse_geocoding_sample">Run reverse geocoding</string>
+
+    <string name="clear_output">Clear output</string>
+
+    <string name="output_view_title">Output:</string>
+</resources>
