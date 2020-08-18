@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/open_simple_ui"
+        android:title="@string/action_open_simple_ui_sample"
+        />
+
+    <item
+        android:id="@+id/open_api_samples"
+        android:title="@string/action_open_api_samples"
+        />
+</menu>
