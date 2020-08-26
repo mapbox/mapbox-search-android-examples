@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/open_simple_ui"
-        android:title="@string/action_open_simple_ui_sample"
+        android:title="@string/action_open_simple_ui_example"
         />
 
     <item
-        android:id="@+id/open_api_samples"
-        android:title="@string/action_open_api_samples"
+        android:id="@+id/open_forward_geocoding_kt_example"
+        android:title="@string/action_open_forward_geocoding_kt_example"
+        />
+
+    <item
+        android:id="@+id/open_forward_geocoding_java_example"
+        android:title="@string/action_open_forward_geocoding_java_example"
+        />
+
+    <item
+        android:id="@+id/open_reverse_geocoding_kt_example"
+        android:title="@string/action_open_reverse_geocoding_kt_example"
+        />
+
+    <item
+        android:id="@+id/open_reverse_geocoding_java_example"
+        android:title="@string/action_open_reverse_geocoding_java_example"
+        />
+
+    <item
+        android:id="@+id/open_category_search_kt_example"
+        android:title="@string/action_open_category_search_kt_example"
+        />
+
+    <item
+        android:id="@+id/open_category_search_java_example"
+        android:title="@string/action_open_category_search_java_example"
         />
 </menu>

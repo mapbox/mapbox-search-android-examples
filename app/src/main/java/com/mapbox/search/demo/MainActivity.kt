@@ -14,6 +14,12 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.mapbox.search.demo.api.CategorySearchJavaExampleActivity
+import com.mapbox.search.demo.api.CategorySearchKotlinExampleActivity
+import com.mapbox.search.demo.api.ForwardGeocodingJavaExampleActivity
+import com.mapbox.search.demo.api.ForwardGeocodingKotlinExampleActivity
+import com.mapbox.search.demo.api.ReverseGeocodingJavaExampleActivity
+import com.mapbox.search.demo.api.ReverseGeocodingKotlinExampleActivity
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
@@ -21,7 +27,7 @@ import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlace
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
 
-class SearchViewActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() {
 
     private lateinit var searchBottomSheetView: SearchBottomSheetView
     private lateinit var searchPlaceView: SearchPlaceBottomSheetView
@@ -31,14 +37,13 @@ class SearchViewActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search_view)
+        setContentView(R.layout.activity_main)
 
         findViewById<Toolbar>(R.id.toolbar).apply {
             title = ""
             setSupportActionBar(this)
         }
 
-        searchBottomSheetView = findViewById(R.id.search_view)
         val configuration = if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             SearchBottomSheetView.Configuration(
                 collapsedStateAnchor = SearchBottomSheetView.CollapsedStateAnchor.SEARCH_BAR
@@ -46,6 +51,8 @@ class SearchViewActivity : AppCompatActivity() {
         } else {
             SearchBottomSheetView.Configuration()
         }
+
+        searchBottomSheetView = findViewById(R.id.search_view)
         searchBottomSheetView.initializeSearch(savedInstanceState, configuration)
         searchBottomSheetView.isHideableByDrag = true
 
@@ -97,7 +104,11 @@ class SearchViewActivity : AppCompatActivity() {
             override fun onLoadingStart(category: Category) {}
 
             override fun onCategoryResultsLoaded(category: Category, searchResults: List<SearchResult>) {
-                showToast("Loaded ${searchResults.size} results for $category")
+                Toast.makeText(
+                    applicationContext,
+                    "Loaded ${searchResults.size} results for $category",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
             override fun onLoadingError(category: Category) {}
@@ -129,8 +140,28 @@ class SearchViewActivity : AppCompatActivity() {
                 startActivity(Intent(this, SimpleUiSearchActivity::class.java))
                 true
             }
-            R.id.open_api_samples -> {
-                startActivity(Intent(this, ApiSamplesActivity::class.java))
+            R.id.open_forward_geocoding_kt_example -> {
+                startActivity(Intent(this, ForwardGeocodingKotlinExampleActivity::class.java))
+                true
+            }
+            R.id.open_forward_geocoding_java_example -> {
+                startActivity(Intent(this, ForwardGeocodingJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_reverse_geocoding_kt_example -> {
+                startActivity(Intent(this, ReverseGeocodingKotlinExampleActivity::class.java))
+                true
+            }
+            R.id.open_reverse_geocoding_java_example -> {
+                startActivity(Intent(this, ReverseGeocodingJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_category_search_kt_example -> {
+                startActivity(Intent(this, CategorySearchKotlinExampleActivity::class.java))
+                true
+            }
+            R.id.open_category_search_java_example -> {
+                startActivity(Intent(this, CategorySearchJavaExampleActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -142,12 +173,9 @@ class SearchViewActivity : AppCompatActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun showToast(message: String) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
-    }
-
     private companion object {
-        private const val PERMISSIONS_REQUEST_LOCATION = 0
+
+        const val PERMISSIONS_REQUEST_LOCATION = 0
 
         fun Context.isPermissionGranted(permission: String): Boolean {
             return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED

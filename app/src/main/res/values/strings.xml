@@ -1,6 +1,11 @@
 <resources>
-    <string name="action_open_simple_ui_sample">Open simple UI sample</string>
-    <string name="action_open_api_samples">Open API samples</string>
+    <string name="action_open_simple_ui_example">Open simple UI example</string>
+    <string name="action_open_forward_geocoding_kt_example">Open forward geocoding Kotlin example</string>
+    <string name="action_open_forward_geocoding_java_example">Open forward geocoding Java example</string>
+    <string name="action_open_reverse_geocoding_kt_example">Open reverse geocoding Kotlin example</string>
+    <string name="action_open_reverse_geocoding_java_example">Open reverse geocoding Java example</string>
+    <string name="action_open_category_search_kt_example">Open category search Kotlin example</string>
+    <string name="action_open_category_search_java_example">Open category search Java example</string>
 
     <string name="simple_ui_toolbar_title">Mapbox search</string>
 
