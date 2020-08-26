@@ -64,14 +64,14 @@ class SearchViewBottomSheetsMediator(
     }
 
     fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        val savedStack = savedInstanceState.getParcelableArrayList<Transaction>(KEY_STATE_EXTERNAL_BACKSTACK) ?: return
+        val savedStack = savedInstanceState.getParcelableArrayList<Transaction>(KEY_STATE_EXTERNAL_BACK_STACK) ?: return
         screensStack.clear()
         screensStack.addAll(savedStack)
         applyTopState()
     }
 
     fun onSaveInstanceState(outState: Bundle) {
-        outState.putParcelableArrayList(KEY_STATE_EXTERNAL_BACKSTACK, ArrayList(screensStack))
+        outState.putParcelableArrayList(KEY_STATE_EXTERNAL_BACK_STACK, ArrayList(screensStack))
     }
 
     private fun onSubCardHidden(hiddenByUser: Boolean) {
@@ -190,7 +190,7 @@ class SearchViewBottomSheetsMediator(
 
     private companion object {
 
-        const val KEY_STATE_EXTERNAL_BACKSTACK = "SearchViewBottomSheetsMediator.state.external.backstack"
+        const val KEY_STATE_EXTERNAL_BACK_STACK = "SearchViewBottomSheetsMediator.state.external.back_stack"
 
         const val KEY_CATEGORY = "SearchViewBottomSheetsMediator.key.category"
 

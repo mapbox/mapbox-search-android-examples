@@ -1,61 +1,54 @@
-package com.mapbox.search.demo.use_case
+package com.mapbox.search.demo.api
 
+import android.app.Activity
+import android.os.Bundle
+import android.util.Log
 import com.mapbox.search.MapboxSearchSdk
 import com.mapbox.search.SearchEngine
 import com.mapbox.search.SearchOptions
 import com.mapbox.search.SearchRequestTask
 import com.mapbox.search.SearchSelectionCallback
-import com.mapbox.search.demo.use_case.ApiSampleUseCase
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.result.SearchSuggestion
 
-class SearchUseCaseKotlin : ApiSampleUseCase() {
+class ForwardGeocodingKotlinExampleActivity : Activity() {
 
     private lateinit var searchEngine: SearchEngine
-    private var searchRequestTask: SearchRequestTask? = null
+    private lateinit var searchRequestTask: SearchRequestTask
 
     private val searchCallback = object : SearchSelectionCallback {
+
         override fun onSuggestions(suggestions: List<SearchSuggestion>) {
             if (suggestions.isEmpty()) {
-                printResult("No suggestions found")
+                Log.i("SearchApiExample", "No suggestions found")
             } else {
-                printResult("Search suggestions: $suggestions")
-
-                if (isAttached) {
-                    printResult("Selecting first...")
-                    searchRequestTask = searchEngine.select(suggestions.first(), this)
-                }
+                Log.i("SearchApiExample", "Search suggestions: $suggestions.\nSelecting first suggestion...")
+                searchRequestTask = searchEngine.select(suggestions.first(), this)
             }
         }
 
         override fun onResult(result: SearchResult) {
-            printResult("Search result: $result")
+            Log.i("SearchApiExample", "Search result: $result")
         }
 
         override fun onError(e: Exception) {
-            printResult("Search error: " + e.message)
+            Log.i("SearchApiExample", "Search error", e)
         }
     }
 
-    override fun onCreate() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         searchEngine = MapboxSearchSdk.createSearchEngine()
-    }
-
-    override fun onRunSample() {
-        searchRequestTask?.cancel()
 
         searchRequestTask = searchEngine.search(
-            SEARCH_QUERY,
+            "Paris Eiffel Tower",
             SearchOptions(limit = 5),
             searchCallback
         )
     }
 
     override fun onDestroy() {
-        searchRequestTask?.cancel()
-    }
-
-    private companion object {
-        private const val SEARCH_QUERY = "Paris Eiffel Tower"
+        searchRequestTask.cancel()
+        super.onDestroy()
     }
 }
