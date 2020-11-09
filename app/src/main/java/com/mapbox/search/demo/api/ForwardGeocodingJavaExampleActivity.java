@@ -40,6 +40,11 @@ public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
         }
 
         @Override
+        public void onCategoryResult(@NonNull List<? extends SearchResult> results) {
+            Log.i("SearchApiExample", "Category search results: " + results);
+        }
+
+        @Override
         public void onError(@NonNull Exception e) {
             Log.i("SearchApiExample", "Search error: ", e);
         }
