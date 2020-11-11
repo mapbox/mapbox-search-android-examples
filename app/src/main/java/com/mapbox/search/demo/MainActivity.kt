@@ -20,6 +20,7 @@ import com.mapbox.search.demo.api.ForwardGeocodingJavaExampleActivity
 import com.mapbox.search.demo.api.ForwardGeocodingKotlinExampleActivity
 import com.mapbox.search.demo.api.ReverseGeocodingJavaExampleActivity
 import com.mapbox.search.demo.api.ReverseGeocodingKotlinExampleActivity
+import com.mapbox.search.demo.maps.MapsIntegrationExampleActivity
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
@@ -88,17 +89,13 @@ class MainActivity : AppCompatActivity() {
             override fun onBackToMainBottomSheet() {}
         })
 
-        searchPlaceView.addOnNavigateClickListener(object : SearchPlaceBottomSheetView.OnNavigateClickListener {
-            override fun onNavigateClick(searchPlace: SearchPlace) {
-                startActivity(IntentUtils.geoIntent(searchPlace.coordinate))
-            }
-        })
+        searchPlaceView.addOnNavigateClickListener { searchPlace ->
+            startActivity(IntentUtils.geoIntent(searchPlace.coordinate))
+        }
 
-        searchPlaceView.addOnShareClickListener(object : SearchPlaceBottomSheetView.OnShareClickListener {
-            override fun onShareClick(searchPlace: SearchPlace) {
-                startActivity(IntentUtils.shareIntent(searchPlace))
-            }
-        })
+        searchPlaceView.addOnShareClickListener { searchPlace ->
+            startActivity(IntentUtils.shareIntent(searchPlace))
+        }
 
         searchCategoriesView.addCategoryLoadingStateListener(object : SearchCategoriesBottomSheetView.CategoryLoadingStateListener {
             override fun onLoadingStart(category: Category) {}
@@ -162,6 +159,10 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.open_category_search_java_example -> {
                 startActivity(Intent(this, CategorySearchJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_maps_integration_example -> {
+                startActivity(Intent(this, MapsIntegrationExampleActivity::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)

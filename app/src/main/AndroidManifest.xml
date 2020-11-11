@@ -36,6 +36,12 @@
         <activity android:name=".api.ReverseGeocodingJavaExampleActivity" />
         <activity android:name=".api.CategorySearchKotlinExampleActivity" />
         <activity android:name=".api.CategorySearchJavaExampleActivity" />
+
+        <activity
+            android:name=".maps.MapsIntegrationExampleActivity"
+            android:windowSoftInputMode="adjustNothing"
+            />
+
     </application>
 
 </manifest>
