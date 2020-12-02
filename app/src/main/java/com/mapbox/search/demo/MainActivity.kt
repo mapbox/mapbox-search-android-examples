@@ -16,6 +16,8 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.mapbox.search.demo.api.CategorySearchJavaExampleActivity
 import com.mapbox.search.demo.api.CategorySearchKotlinExampleActivity
+import com.mapbox.search.demo.api.ForwardGeocodingBatchResolvingJavaExampleActivity
+import com.mapbox.search.demo.api.ForwardGeocodingBatchResolvingKotlinExampleActivity
 import com.mapbox.search.demo.api.ForwardGeocodingJavaExampleActivity
 import com.mapbox.search.demo.api.ForwardGeocodingKotlinExampleActivity
 import com.mapbox.search.demo.api.ReverseGeocodingJavaExampleActivity
@@ -143,6 +145,14 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.open_forward_geocoding_java_example -> {
                 startActivity(Intent(this, ForwardGeocodingJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_forward_geocoding_batch_resolving_kt_example -> {
+                startActivity(Intent(this, ForwardGeocodingBatchResolvingKotlinExampleActivity::class.java))
+                true
+            }
+            R.id.open_forward_geocoding_batch_resolving_java_example -> {
+                startActivity(Intent(this, ForwardGeocodingBatchResolvingJavaExampleActivity::class.java))
                 true
             }
             R.id.open_reverse_geocoding_kt_example -> {

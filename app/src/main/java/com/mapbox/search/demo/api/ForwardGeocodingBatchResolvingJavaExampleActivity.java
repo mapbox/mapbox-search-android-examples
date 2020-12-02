@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.SearchEngine;
+import com.mapbox.search.SearchMultipleSelectionCallback;
 import com.mapbox.search.SearchOptions;
 import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.SearchSelectionCallback;
@@ -17,7 +18,7 @@ import com.mapbox.search.result.SearchSuggestion;
 
 import java.util.List;
 
-public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
+public class ForwardGeocodingBatchResolvingJavaExampleActivity extends AppCompatActivity {
 
     private SearchEngine searchEngine;
     private SearchRequestTask searchRequestTask;
@@ -29,19 +30,32 @@ public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
             if (suggestions.isEmpty()) {
                 Log.i("SearchApiExample", "No suggestions found");
             } else {
-                Log.i("SearchApiExample", "Search suggestions: " + suggestions + "\nSelecting first...");
-                searchRequestTask = searchEngine.select(suggestions.get(0), this);
+                Log.i("SearchApiExample", "Search suggestions: " + suggestions);
+                searchRequestTask = searchEngine.select(suggestions, multipleSelection);
             }
         }
 
         @Override
-        public void onResult(@NonNull SearchSuggestion searchSuggestion, @NonNull SearchResult result) {
+        public void onResult(@NonNull SearchSuggestion suggestion, @NonNull SearchResult result) {
             Log.i("SearchApiExample", "Search result: " + result);
         }
 
         @Override
-        public void onCategoryResult(@NonNull SearchSuggestion searchSuggestion, @NonNull List<? extends SearchResult> results) {
+        public void onCategoryResult(@NonNull SearchSuggestion suggestion, @NonNull List<? extends SearchResult> results) {
             Log.i("SearchApiExample", "Category search results: " + results);
+        }
+
+        @Override
+        public void onError(@NonNull Exception e) {
+            Log.i("SearchApiExample", "Search error: ", e);
+        }
+    };
+
+    private final SearchMultipleSelectionCallback multipleSelection = new SearchMultipleSelectionCallback() {
+
+        @Override
+        public void onResult(@NonNull List<? extends SearchSuggestion> suggestions, @NonNull List<? extends SearchResult> results) {
+            Log.i("SearchApiExample", "Batch retrieve results: " + results);
         }
 
         @Override
@@ -57,7 +71,6 @@ public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
         searchEngine = MapboxSearchSdk.createSearchEngine();
 
         final SearchOptions options = new SearchOptions.Builder()
-            .limit(5)
             .build();
 
         searchRequestTask = searchEngine.search("Paris Eiffel Tower", options, searchCallback);
