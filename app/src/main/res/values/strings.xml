@@ -1,5 +1,7 @@
 <resources>
 
+    <string name="app_name">Mapbox Search Examples</string>
+
     <string name="action_open_simple_ui_example">Open simple UI example</string>
     <string name="action_open_forward_geocoding_kt_example">Open forward geocoding Kotlin example</string>
     <string name="action_open_forward_geocoding_java_example">Open forward geocoding Java example</string>

@@ -27,11 +27,11 @@ class ForwardGeocodingKotlinExampleActivity : Activity() {
             }
         }
 
-        override fun onResult(result: SearchResult) {
+        override fun onResult(suggestion: SearchSuggestion, result: SearchResult) {
             Log.i("SearchApiExample", "Search result: $result")
         }
 
-        override fun onCategoryResult(results: List<SearchResult>) {
+        override fun onCategoryResult(suggestion: SearchSuggestion, results: List<SearchResult>) {
             Log.i("SearchApiExample", "Category search results: $results")
         }
 
