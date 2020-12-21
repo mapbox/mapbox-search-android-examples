@@ -21,7 +21,7 @@ class CategorySearchKotlinExampleActivity : AppCompatActivity() {
             if (results.isEmpty()) {
                 Log.i("SearchApiExample", "No category search results")
             } else {
-                Log.i("SearchApiExample", "Category search results: ${results.first()}")
+                Log.i("SearchApiExample", "Category search results: $results")
             }
         }
 
