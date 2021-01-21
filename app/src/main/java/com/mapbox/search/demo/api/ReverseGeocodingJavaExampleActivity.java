@@ -11,7 +11,6 @@ import com.mapbox.geojson.Point;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.ReverseGeoOptions;
 import com.mapbox.search.ReverseGeocodingSearchEngine;
-import com.mapbox.search.ReverseMode;
 import com.mapbox.search.SearchCallback;
 import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.result.SearchResult;
@@ -48,7 +47,6 @@ public class ReverseGeocodingJavaExampleActivity extends AppCompatActivity {
 
         final ReverseGeoOptions options = new ReverseGeoOptions.Builder(Point.fromLngLat(2.294434, 48.858349))
             .limit(1)
-            .reverseMode(ReverseMode.DISTANCE)
             .build();
 
         searchRequestTask = reverseGeocoding.search(options, searchCallback);
