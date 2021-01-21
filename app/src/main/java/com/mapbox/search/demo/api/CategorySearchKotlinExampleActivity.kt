@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.search.CategorySearchEngine
+import com.mapbox.search.CategorySearchOptions
 import com.mapbox.search.MapboxSearchSdk
 import com.mapbox.search.SearchCallback
 import com.mapbox.search.SearchOptions
@@ -37,7 +38,7 @@ class CategorySearchKotlinExampleActivity : AppCompatActivity() {
 
         searchRequestTask = categorySearchEngine.search(
             "cafe",
-            SearchOptions(limit = 1),
+            CategorySearchOptions(limit = 1),
             searchCallback
         )
     }
