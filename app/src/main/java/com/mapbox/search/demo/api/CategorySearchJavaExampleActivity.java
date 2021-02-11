@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.mapbox.search.CategorySearchEngine;
 import com.mapbox.search.CategorySearchOptions;
 import com.mapbox.search.MapboxSearchSdk;
+import com.mapbox.search.ResponseInfo;
 import com.mapbox.search.SearchCallback;
 import com.mapbox.search.SearchOptions;
 import com.mapbox.search.SearchRequestTask;
@@ -25,7 +26,7 @@ public class CategorySearchJavaExampleActivity extends AppCompatActivity {
     private final SearchCallback searchCallback = new SearchCallback() {
 
         @Override
-        public void onResults(@NonNull List<? extends SearchResult> results) {
+        public void onResults(@NonNull List<? extends SearchResult> results, @NonNull ResponseInfo responseInfo) {
             if (results.isEmpty()) {
                 Log.i("SearchApiExample", "No category search results");
             } else {

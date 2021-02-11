@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.geojson.Point
 import com.mapbox.search.MapboxSearchSdk
+import com.mapbox.search.ResponseInfo
 import com.mapbox.search.ReverseGeoOptions
 import com.mapbox.search.ReverseGeocodingSearchEngine
 import com.mapbox.search.SearchCallback
@@ -18,7 +19,7 @@ class ReverseGeocodingKotlinExampleActivity : AppCompatActivity() {
 
     private val searchCallback = object : SearchCallback {
 
-        override fun onResults(results: List<SearchResult>) {
+        override fun onResults(results: List<SearchResult>, responseInfo: ResponseInfo) {
             if (results.isEmpty()) {
                 Log.i("SearchApiExample", "No reverse geocoding results")
             } else {

@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.search.CategorySearchEngine
 import com.mapbox.search.CategorySearchOptions
 import com.mapbox.search.MapboxSearchSdk
+import com.mapbox.search.ResponseInfo
 import com.mapbox.search.SearchCallback
 import com.mapbox.search.SearchOptions
 import com.mapbox.search.SearchRequestTask
@@ -18,7 +19,7 @@ class CategorySearchKotlinExampleActivity : AppCompatActivity() {
 
     private val searchCallback: SearchCallback = object : SearchCallback {
 
-        override fun onResults(results: List<SearchResult>) {
+        override fun onResults(results: List<SearchResult>, responseInfo: ResponseInfo) {
             if (results.isEmpty()) {
                 Log.i("SearchApiExample", "No category search results")
             } else {

@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import com.mapbox.search.MapboxSearchSdk
+import com.mapbox.search.ResponseInfo
 import com.mapbox.search.SearchEngine
 import com.mapbox.search.SearchMultipleSelectionCallback
 import com.mapbox.search.SearchOptions
@@ -19,7 +20,7 @@ class ForwardGeocodingBatchResolvingKotlinExampleActivity : Activity() {
 
     private val searchCallback = object : SearchSelectionCallback, SearchMultipleSelectionCallback {
 
-        override fun onSuggestions(suggestions: List<SearchSuggestion>) {
+        override fun onSuggestions(suggestions: List<SearchSuggestion>, responseInfo: ResponseInfo) {
             if (suggestions.isEmpty()) {
                 Log.i("SearchApiExample", "No suggestions found")
             } else {
@@ -28,15 +29,23 @@ class ForwardGeocodingBatchResolvingKotlinExampleActivity : Activity() {
             }
         }
 
-        override fun onResult(suggestion: SearchSuggestion, result: SearchResult) {
+        override fun onResult(suggestion: SearchSuggestion, result: SearchResult, responseInfo: ResponseInfo) {
             Log.i("SearchApiExample", "Search result: $result")
         }
 
-        override fun onCategoryResult(suggestion: SearchSuggestion, results: List<SearchResult>) {
+        override fun onCategoryResult(
+            suggestion: SearchSuggestion,
+            results: List<SearchResult>,
+            responseInfo: ResponseInfo
+        ) {
             Log.i("SearchApiExample", "Category search results: $results")
         }
 
-        override fun onResult(suggestions: List<SearchSuggestion>, results: List<SearchResult>) {
+        override fun onResult(
+            suggestions: List<SearchSuggestion>,
+            results: List<SearchResult>,
+            responseInfo: ResponseInfo
+        ) {
             Log.i("SearchApiExample", "Batch retrieve results: $results")
         }
 
