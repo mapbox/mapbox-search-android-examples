@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.search.MapboxSearchSdk;
+import com.mapbox.search.ResponseInfo;
 import com.mapbox.search.SearchEngine;
 import com.mapbox.search.SearchOptions;
 import com.mapbox.search.SearchRequestTask;
@@ -25,7 +26,10 @@ public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
     private final SearchSelectionCallback searchCallback = new SearchSelectionCallback() {
 
         @Override
-        public void onSuggestions(@NonNull List<? extends SearchSuggestion> suggestions) {
+        public void onSuggestions(
+            @NonNull List<? extends SearchSuggestion> suggestions,
+            @NonNull ResponseInfo responseInfo
+        ) {
             if (suggestions.isEmpty()) {
                 Log.i("SearchApiExample", "No suggestions found");
             } else {
@@ -35,12 +39,20 @@ public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
         }
 
         @Override
-        public void onResult(@NonNull SearchSuggestion searchSuggestion, @NonNull SearchResult result) {
+        public void onResult(
+            @NonNull SearchSuggestion searchSuggestion,
+            @NonNull SearchResult result,
+            @NonNull ResponseInfo responseInfo
+        ) {
             Log.i("SearchApiExample", "Search result: " + result);
         }
 
         @Override
-        public void onCategoryResult(@NonNull SearchSuggestion searchSuggestion, @NonNull List<? extends SearchResult> results) {
+        public void onCategoryResult(
+            @NonNull SearchSuggestion searchSuggestion,
+            @NonNull List<? extends SearchResult> results,
+            @NonNull ResponseInfo responseInfo
+        ) {
             Log.i("SearchApiExample", "Category search results: " + results);
         }
 

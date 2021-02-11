@@ -4,6 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import com.mapbox.search.MapboxSearchSdk
+import com.mapbox.search.ResponseInfo
 import com.mapbox.search.SearchEngine
 import com.mapbox.search.SearchOptions
 import com.mapbox.search.SearchRequestTask
@@ -18,7 +19,7 @@ class ForwardGeocodingKotlinExampleActivity : Activity() {
 
     private val searchCallback = object : SearchSelectionCallback {
 
-        override fun onSuggestions(suggestions: List<SearchSuggestion>) {
+        override fun onSuggestions(suggestions: List<SearchSuggestion>, responseInfo: ResponseInfo) {
             if (suggestions.isEmpty()) {
                 Log.i("SearchApiExample", "No suggestions found")
             } else {
@@ -27,11 +28,11 @@ class ForwardGeocodingKotlinExampleActivity : Activity() {
             }
         }
 
-        override fun onResult(suggestion: SearchSuggestion, result: SearchResult) {
+        override fun onResult(suggestion: SearchSuggestion, result: SearchResult, responseInfo: ResponseInfo) {
             Log.i("SearchApiExample", "Search result: $result")
         }
 
-        override fun onCategoryResult(suggestion: SearchSuggestion, results: List<SearchResult>) {
+        override fun onCategoryResult(suggestion: SearchSuggestion, results: List<SearchResult>, responseInfo: ResponseInfo) {
             Log.i("SearchApiExample", "Category search results: $results")
         }
 
