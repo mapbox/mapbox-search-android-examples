@@ -13,6 +13,7 @@ android {
 
     defaultConfig {
         buildConfigField "String", "MAPBOX_API_TOKEN", "\"$mapboxApiToken\""
+        resValue "string", "mapbox_access_token", mapboxApiToken
 
         applicationId "com.mapbox.search.demo"
         minSdkVersion 21
@@ -50,8 +51,7 @@ dependencies {
 
     implementation "com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.9"
 
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:9.6.0'
-    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v9:0.9.0'
+    implementation "com.mapbox.maps:android:10.0.0-beta.15"
 
     testImplementation 'junit:junit:4.13'
 

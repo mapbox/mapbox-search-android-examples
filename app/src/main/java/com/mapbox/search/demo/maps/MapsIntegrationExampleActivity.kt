@@ -1,29 +1,40 @@
 package com.mapbox.search.demo.maps
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.ShapeDrawable
 import android.graphics.drawable.shapes.OvalShape
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.core.graphics.drawable.toBitmap
+import com.mapbox.geojson.Feature
+import com.mapbox.geojson.FeatureCollection
 import com.mapbox.geojson.Point
-import com.mapbox.mapboxsdk.Mapbox
-import com.mapbox.mapboxsdk.camera.CameraPosition
-import com.mapbox.mapboxsdk.geometry.LatLng
-import com.mapbox.mapboxsdk.geometry.LatLngBounds
-import com.mapbox.mapboxsdk.maps.MapView
-import com.mapbox.mapboxsdk.maps.MapboxMap
-import com.mapbox.mapboxsdk.maps.Style
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
-import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
-import com.mapbox.search.demo.BuildConfig
+import com.mapbox.maps.CameraOptions
+import com.mapbox.maps.EdgeInsets
+import com.mapbox.maps.MapView
+import com.mapbox.maps.MapboxMap
+import com.mapbox.maps.Style
+import com.mapbox.maps.extension.style.image.image
+import com.mapbox.maps.extension.style.layers.generated.symbolLayer
+import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
+import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
+import com.mapbox.maps.extension.style.sources.getSourceAs
+import com.mapbox.maps.extension.style.style
 import com.mapbox.search.demo.R
 import com.mapbox.search.demo.SearchViewBottomSheetsMediator
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
+import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView.CategoryLoadingStateListener
 import com.mapbox.search.ui.view.place.SearchPlace
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
 
@@ -38,23 +49,36 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
 
     private lateinit var cardsMediator: SearchViewBottomSheetsMediator
 
-    private lateinit var symbolManager: SymbolManager
+    private var markerCoordinates = mutableListOf<Point>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Mapbox.getInstance(this, BuildConfig.MAPBOX_API_TOKEN)
-
         setContentView(R.layout.activity_maps_integration)
 
         mapView = findViewById(R.id.map_view)
-        mapView.onCreate(savedInstanceState)
-        mapView.getMapAsync { mapboxMap ->
+        mapView.getMapboxMap().also { mapboxMap ->
             this.mapboxMap = mapboxMap
-            mapboxMap.setStyle(Style.MAPBOX_STREETS) { style ->
-                symbolManager = SymbolManager(mapView, mapboxMap, style)
-                style.addImage(SEARCH_PIN_IMAGE_NAME, createSearchPinDrawable())
-            }
+            mapboxMap.loadStyle(
+                style(styleUri = Style.MAPBOX_STREETS) {
+                    +geoJsonSource(SEARCH_PIN_SOURCE_ID) {
+                        featureCollection(
+                            FeatureCollection.fromFeatures(
+                                markerCoordinates.map {
+                                    Feature.fromGeometry(it)
+                                }
+                            )
+                        )
+                    }
+                    +image(SEARCH_PIN_IMAGE_ID) {
+                        bitmap(createSearchPinDrawable().toBitmap(config = Bitmap.Config.ARGB_8888))
+                    }
+                    +symbolLayer(SEARCH_PIN_LAYER_ID, SEARCH_PIN_SOURCE_ID) {
+                        iconImage(SEARCH_PIN_IMAGE_ID)
+                        iconAllowOverlap(true)
+                    }
+                }
+            )
         }
 
         searchBottomSheetView = findViewById(R.id.search_view)
@@ -90,8 +114,7 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
             }
         })
 
-        searchCategoriesView.addCategoryLoadingStateListener(object :
-            SearchCategoriesBottomSheetView.CategoryLoadingStateListener {
+        searchCategoriesView.addCategoryLoadingStateListener(object : CategoryLoadingStateListener {
             override fun onLoadingStart(category: Category) {}
 
             override fun onCategoryResultsLoaded(category: Category, searchResults: List<SearchResult>) {
@@ -100,6 +123,14 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
 
             override fun onLoadingError(category: Category) {}
         })
+
+        if (!isPermissionGranted(Manifest.permission.ACCESS_FINE_LOCATION)) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                PERMISSIONS_REQUEST_LOCATION
+            )
+        }
     }
 
     override fun onBackPressed() {
@@ -113,23 +144,12 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
         mapView.onStart()
     }
 
-    override fun onResume() {
-        super.onResume()
-        mapView.onResume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        mapView.onPause()
-    }
-
     override fun onStop() {
         super.onStop()
         mapView.onStop()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        mapView.onSaveInstanceState(outState)
         cardsMediator.onSaveInstanceState(outState)
         super.onSaveInstanceState(outState)
     }
@@ -153,52 +173,65 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
             return
         }
 
-        val cameraPosition = mapboxMap.getCameraForLatLngBounds(
-            createLatLngBounds(coordinates),
-            markersPaddings
+        val cameraOptions = mapboxMap.cameraForCoordinates(
+            coordinates, markersPaddings, bearing = null, pitch = null
         )
 
-        if (cameraPosition == null) {
+        if (cameraOptions.center == null) {
             clearMarkers()
             return
         }
 
-        val symbolOptions = coordinates.map { createSymbolOptions(it) }
-        showMarkers(cameraPosition, symbolOptions)
+        showMarkers(cameraOptions, coordinates)
     }
 
     private fun showMarker(coordinate: Point) {
-        val cameraPosition = CameraPosition.Builder()
-            .target(coordinate.toMapCoordinate())
+        val cameraOptions = CameraOptions.Builder()
+            .center(coordinate)
             .zoom(10.0)
             .build()
 
-        showMarkers(cameraPosition, listOf(createSymbolOptions(coordinate)))
+        showMarkers(cameraOptions, listOf(coordinate))
     }
 
-    private fun showMarkers(cameraPosition: CameraPosition, symbolsOptions: List<SymbolOptions>) {
-        clearMarkers()
-        symbolsOptions.forEach { symbolManager.create(it) }
-        mapboxMap.cameraPosition = cameraPosition
+    private fun showMarkers(cameraPosition: CameraOptions, coordinates: List<Point>) {
+        markerCoordinates.clear()
+        markerCoordinates.addAll(coordinates)
+        updateMarkersOnMap()
+
+        mapboxMap.jumpTo(cameraPosition)
     }
 
     private fun clearMarkers() {
-        symbolManager.deleteAll()
+        markerCoordinates.clear()
+        updateMarkersOnMap()
+    }
+
+    private fun updateMarkersOnMap() {
+        mapboxMap.getStyle()?.getSourceAs<GeoJsonSource>(SEARCH_PIN_SOURCE_ID)?.featureCollection(
+            FeatureCollection.fromFeatures(
+                markerCoordinates.map {
+                    Feature.fromGeometry(it)
+                }
+            )
+        )
     }
 
     private companion object {
 
-        const val SEARCH_PIN_IMAGE_NAME = "search.pin.image.name"
+        const val SEARCH_PIN_SOURCE_ID = "search.pin.source.id"
+        const val SEARCH_PIN_IMAGE_ID = "search.pin.image.id"
+        const val SEARCH_PIN_LAYER_ID = "search.pin.layer.id"
 
-        private val markersPaddings: IntArray = dpToPx(64).let { mapPadding ->
-            intArrayOf(mapPadding, mapPadding, mapPadding, mapPadding)
-        }
+        val markersPaddings: EdgeInsets = dpToPx(64).toDouble()
+            .let { mapPadding ->
+                EdgeInsets(mapPadding, mapPadding, mapPadding, mapPadding)
+            }
 
-        fun createLatLngBounds(coordinates: List<Point>): LatLngBounds {
-            check(coordinates.size >= 2)
-            return LatLngBounds.Builder()
-                .includes(coordinates.map { it.toMapCoordinate() })
-                .build()
+        const val PERMISSIONS_REQUEST_LOCATION = 0
+
+        fun Context.isPermissionGranted(permission: String): Boolean {
+            return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
         }
 
         fun createSearchPinDrawable(): ShapeDrawable {
@@ -210,18 +243,8 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
             return drawable
         }
 
-        fun createSymbolOptions(coordinate: Point): SymbolOptions {
-            return SymbolOptions()
-                .withLatLng(coordinate.toMapCoordinate())
-                .withIconImage(SEARCH_PIN_IMAGE_NAME)
-                .withIconSize(1f)
-                .withSymbolSortKey(10.0f)
-        }
-
         fun dpToPx(dp: Int): Int {
             return (dp * Resources.getSystem().displayMetrics.density).toInt()
         }
-
-        fun Point.toMapCoordinate(): LatLng = LatLng(latitude(), longitude())
     }
 }
