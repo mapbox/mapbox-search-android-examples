@@ -20,6 +20,10 @@ import com.mapbox.search.demo.api.ForwardGeocodingBatchResolvingJavaExampleActiv
 import com.mapbox.search.demo.api.ForwardGeocodingBatchResolvingKotlinExampleActivity
 import com.mapbox.search.demo.api.ForwardGeocodingJavaExampleActivity
 import com.mapbox.search.demo.api.ForwardGeocodingKotlinExampleActivity
+import com.mapbox.search.demo.api.OfflineReverseGeocodingJavaExampleActivity
+import com.mapbox.search.demo.api.OfflineReverseGeocodingKotlinExampleActivity
+import com.mapbox.search.demo.api.OfflineSearchJavaExampleActivity
+import com.mapbox.search.demo.api.OfflineSearchKotlinExampleActivity
 import com.mapbox.search.demo.api.ReverseGeocodingJavaExampleActivity
 import com.mapbox.search.demo.api.ReverseGeocodingKotlinExampleActivity
 import com.mapbox.search.demo.maps.MapsIntegrationExampleActivity
@@ -169,6 +173,22 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.open_category_search_java_example -> {
                 startActivity(Intent(this, CategorySearchJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_offline_search_java_example -> {
+                startActivity(Intent(this, OfflineSearchJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_offline_search_kt_example -> {
+                startActivity(Intent(this, OfflineSearchKotlinExampleActivity::class.java))
+                true
+            }
+            R.id.open_offline_reverse_geocoding_java_example -> {
+                startActivity(Intent(this, OfflineReverseGeocodingJavaExampleActivity::class.java))
+                true
+            }
+            R.id.open_offline_reverse_geocoding_kt_example -> {
+                startActivity(Intent(this, OfflineReverseGeocodingKotlinExampleActivity::class.java))
                 true
             }
             R.id.open_maps_integration_example -> {
