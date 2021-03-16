@@ -47,6 +47,27 @@
         android:title="@string/action_open_category_search_java_example"
         />
 
+
+    <item
+        android:id="@+id/open_offline_search_java_example"
+        android:title="@string/action_open_offline_search_java_example"
+        />
+
+    <item
+        android:id="@+id/open_offline_search_kt_example"
+        android:title="@string/action_open_offline_search_kt_example"
+        />
+
+    <item
+        android:id="@+id/open_offline_reverse_geocoding_java_example"
+        android:title="@string/action_open_offline_reverse_geocoding_java_example"
+        />
+
+    <item
+        android:id="@+id/open_offline_reverse_geocoding_kt_example"
+        android:title="@string/action_open_offline_reverse_geocoding_kt_example"
+        />
+
     <item
         android:id="@+id/open_maps_integration_example"
         android:title="@string/action_open_maps_integration_example"

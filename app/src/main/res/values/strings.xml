@@ -11,6 +11,10 @@
     <string name="action_open_reverse_geocoding_java_example">Open reverse geocoding Java example</string>
     <string name="action_open_category_search_kt_example">Open category search Kotlin example</string>
     <string name="action_open_category_search_java_example">Open category search Java example</string>
+    <string name="action_open_offline_search_kt_example">Open offline search Kotlin example</string>
+    <string name="action_open_offline_search_java_example">Open offline search Java example</string>
+    <string name="action_open_offline_reverse_geocoding_kt_example">Open offline reverse geocoding Kotlin example</string>
+    <string name="action_open_offline_reverse_geocoding_java_example">Open offline reverse geocoding Java example</string>
 
     <string name="action_open_maps_integration_example">Open Maps integration example</string>
 
