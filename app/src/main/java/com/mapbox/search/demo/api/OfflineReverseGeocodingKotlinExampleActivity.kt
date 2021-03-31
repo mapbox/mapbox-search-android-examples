@@ -34,11 +34,23 @@ class OfflineReverseGeocodingKotlinExampleActivity : Activity() {
 
         searchEngine = MapboxSearchSdk.getOfflineSearchEngine()
 
-        // Change function arguments to what's available on your device
+        /**
+         * TODO Change function arguments to what's available on your device.
+         * Make sure each region added only once.
+         */
         searchEngine.addOfflineRegion(
             path = File(filesDir, "offline_data/germany").path,
             mapsFileNames = listOf("germany.map"),
-            boundaryFileName = "germany.boundary"
+            boundaryFileName = "germany.boundary",
+            callback = object : OfflineSearchEngine.AddRegionCallback {
+                override fun onAdded() {
+                    Log.i("SearchApiExample", "Offline region has been added")
+                }
+
+                override fun onError(e: java.lang.Exception) {
+                    Log.i("SearchApiExample", "Unable to add offline region", e)
+                }
+            }
         )
 
         searchRequestTask = searchEngine.reverseGeocoding(
