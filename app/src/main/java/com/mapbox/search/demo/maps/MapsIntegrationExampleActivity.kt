@@ -194,12 +194,12 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
         showMarkers(cameraOptions, listOf(coordinate))
     }
 
-    private fun showMarkers(cameraPosition: CameraOptions, coordinates: List<Point>) {
+    private fun showMarkers(cameraOptions: CameraOptions, coordinates: List<Point>) {
         markerCoordinates.clear()
         markerCoordinates.addAll(coordinates)
         updateMarkersOnMap()
 
-        mapboxMap.jumpTo(cameraPosition)
+        mapboxMap.setCamera(cameraOptions)
     }
 
     private fun clearMarkers() {

@@ -8,6 +8,11 @@ class SearchDemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
-        MapboxSearchSdk.initialize(this, BuildConfig.MAPBOX_API_TOKEN, DefaultLocationProvider(this))
+
+        MapboxSearchSdk.initialize(
+            application = this,
+            accessToken = BuildConfig.MAPBOX_API_TOKEN,
+            locationProvider = DefaultLocationProvider(this)
+        )
     }
 }

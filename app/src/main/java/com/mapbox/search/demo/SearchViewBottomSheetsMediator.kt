@@ -39,7 +39,7 @@ class SearchViewBottomSheetsMediator(
 
         with(placeBottomSheetView) {
             addOnBottomSheetStateChangedListener { newState, fromUser ->
-                if (newState == SearchPlaceBottomSheetView.BottomSheetState.HIDDEN) {
+                if (newState == SearchPlaceBottomSheetView.HIDDEN) {
                     onSubCardHidden(fromUser)
                 }
             }
@@ -48,7 +48,7 @@ class SearchViewBottomSheetsMediator(
 
         with(categoriesBottomSheetView) {
             addOnBottomSheetStateChangedListener { newState, fromUser ->
-                if (newState == SearchCategoriesBottomSheetView.BottomSheetState.HIDDEN) {
+                if (newState == SearchCategoriesBottomSheetView.HIDDEN) {
                     onSubCardHidden(fromUser)
                 }
             }
@@ -196,12 +196,12 @@ class SearchViewBottomSheetsMediator(
 
         fun wrapCategory(category: Category): Bundle {
             return Bundle().apply {
-                putSerializable(KEY_CATEGORY, category)
+                putParcelable(KEY_CATEGORY, category)
             }
         }
 
         fun Bundle?.unwrapCategory(): Category? {
-            return this?.getSerializable(KEY_CATEGORY) as? Category
+            return this?.getParcelable(KEY_CATEGORY)
         }
 
         fun SearchCategoriesBottomSheetView.hideCardAndCancelLoading() {

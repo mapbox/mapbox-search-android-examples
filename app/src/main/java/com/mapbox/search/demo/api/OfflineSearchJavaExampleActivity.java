@@ -59,11 +59,25 @@ public class OfflineSearchJavaExampleActivity extends AppCompatActivity {
 
         searchEngine = MapboxSearchSdk.getOfflineSearchEngine();
 
-        // Change function arguments to what's available on your device
+        /*
+         * TODO Change function arguments to what's available on your device.
+         * Make sure each region added only once.
+         */
         searchEngine.addOfflineRegion(
             new File(getFilesDir(), "offline_data/germany").getPath(),
             Collections.singletonList("germany.map"),
-            "germany.boundary"
+            "germany.boundary",
+            new OfflineSearchEngine.AddRegionCallback() {
+                @Override
+                public void onAdded() {
+                    Log.i("SearchApiExample", "Offline region has been added");
+                }
+
+                @Override
+                public void onError(@NonNull Exception e) {
+                    Log.i("SearchApiExample", "Unable to add offline region", e);
+                }
+            }
         );
 
         final OfflineSearchOptions options = new OfflineSearchOptions.Builder()
