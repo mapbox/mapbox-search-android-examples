@@ -1,6 +1,6 @@
 # Mapbox Search SDK for Android example app.
 
-Example application showing usage of Mapbox Search SDK for Android.
+Example application showing usage of [Mapbox Search SDK for Android](https://docs.mapbox.com/android/search/guides/).
 
 
 ## Configure credentials
