@@ -7,7 +7,7 @@ import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlace
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.LinkedList
 import java.util.concurrent.CopyOnWriteArrayList
 
