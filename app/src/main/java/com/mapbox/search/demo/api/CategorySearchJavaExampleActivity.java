@@ -12,7 +12,6 @@ import com.mapbox.search.CategorySearchOptions;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.ResponseInfo;
 import com.mapbox.search.SearchCallback;
-import com.mapbox.search.SearchOptions;
 import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.result.SearchResult;
 

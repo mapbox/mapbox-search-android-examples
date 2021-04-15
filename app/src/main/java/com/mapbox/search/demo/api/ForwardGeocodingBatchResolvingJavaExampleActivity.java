@@ -27,10 +27,7 @@ public class ForwardGeocodingBatchResolvingJavaExampleActivity extends AppCompat
     private final SearchSelectionCallback searchCallback = new SearchSelectionCallback() {
 
         @Override
-        public void onSuggestions(
-            @NonNull List<? extends SearchSuggestion> suggestions,
-            @NonNull ResponseInfo responseInfo
-        ) {
+        public void onSuggestions(@NonNull List<? extends SearchSuggestion> suggestions, @NonNull ResponseInfo responseInfo) {
             if (suggestions.isEmpty()) {
                 Log.i("SearchApiExample", "No suggestions found");
             } else {
@@ -40,20 +37,12 @@ public class ForwardGeocodingBatchResolvingJavaExampleActivity extends AppCompat
         }
 
         @Override
-        public void onResult(
-            @NonNull SearchSuggestion suggestion,
-            @NonNull SearchResult result,
-            @NonNull ResponseInfo responseInfo
-        ) {
+        public void onResult(@NonNull SearchSuggestion suggestion, @NonNull SearchResult result, @NonNull ResponseInfo info) {
             Log.i("SearchApiExample", "Search result: " + result);
         }
 
         @Override
-        public void onCategoryResult(
-            @NonNull SearchSuggestion suggestion,
-            @NonNull List<? extends SearchResult> results,
-            @NonNull ResponseInfo responseInfo
-        ) {
+        public void onCategoryResult(@NonNull SearchSuggestion suggestion, @NonNull List<? extends SearchResult> results, @NonNull ResponseInfo responseInfo) {
             Log.i("SearchApiExample", "Category search results: " + results);
         }
 
@@ -66,11 +55,7 @@ public class ForwardGeocodingBatchResolvingJavaExampleActivity extends AppCompat
     private final SearchMultipleSelectionCallback multipleSelection = new SearchMultipleSelectionCallback() {
 
         @Override
-        public void onResult(
-            @NonNull List<? extends SearchSuggestion> suggestions,
-            @NonNull List<? extends SearchResult> results,
-            @NonNull ResponseInfo responseInfo
-        ) {
+        public void onResult(@NonNull List<? extends SearchSuggestion> suggestions, @NonNull List<? extends SearchResult> results, @NonNull ResponseInfo responseInfo) {
             Log.i("SearchApiExample", "Batch retrieve results: " + results);
         }
 
