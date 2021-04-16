@@ -29,7 +29,11 @@ class ForwardGeocodingBatchResolvingKotlinExampleActivity : Activity() {
             }
         }
 
-        override fun onResult(suggestion: SearchSuggestion, result: SearchResult, responseInfo: ResponseInfo) {
+        override fun onResult(
+            suggestion: SearchSuggestion,
+            result: SearchResult,
+            responseInfo: ResponseInfo
+        ) {
             Log.i("SearchApiExample", "Search result: $result")
         }
 

@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 
 def mapboxApiToken = project.properties['MAPBOX_ACCESS_TOKEN'] ?: System.getenv('MAPBOX_ACCESS_TOKEN')
 if (mapboxApiToken == null) {
@@ -49,7 +49,7 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
 
-    implementation "com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.10"
+    implementation "com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.11"
 
     implementation "com.mapbox.maps:android:10.0.0-beta.16"
 

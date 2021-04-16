@@ -30,6 +30,7 @@ import com.mapbox.maps.extension.style.sources.getSourceAs
 import com.mapbox.maps.extension.style.style
 import com.mapbox.search.demo.R
 import com.mapbox.search.demo.SearchViewBottomSheetsMediator
+import com.mapbox.search.demo.SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
@@ -102,7 +103,7 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
             cardsMediator.onRestoreInstanceState(it)
         }
 
-        cardsMediator.addSearchBottomSheetsEventsListener(object : SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener {
+        cardsMediator.addSearchBottomSheetsEventsListener(object : SearchBottomSheetsEventsListener {
             override fun onOpenPlaceBottomSheet(place: SearchPlace) {
                 showMarker(place.coordinate)
             }

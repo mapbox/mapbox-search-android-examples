@@ -7,7 +7,7 @@ import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlace
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
 import java.util.LinkedList
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -131,23 +131,27 @@ class SearchViewBottomSheetsMediator(
             if (transaction == null) {
                 fallback { "Transaction is null" }
             } else {
-                when (transaction.screen) {
-                    Screen.CATEGORIES -> {
-                        val category = (transaction.arg as? Bundle)?.unwrapCategory()
-                        if (category == null) {
-                            fallback { "Saved category is null" }
-                        } else {
-                            openCategory(category, fromBackStack = true)
-                        }
-                    }
-                    Screen.PLACE -> {
-                        val place = transaction.arg as? SearchPlace
-                        if (place == null) {
-                            fallback { "Saved place is null" }
-                        } else {
-                            openPlaceCard(place, fromBackStack = true)
-                        }
-                    }
+                transaction.execute()
+            }
+        }
+    }
+
+    private fun Transaction.execute() {
+        when (screen) {
+            Screen.CATEGORIES -> {
+                val category = (arg as? Bundle)?.unwrapCategory()
+                if (category == null) {
+                    fallback { "Saved category is null" }
+                } else {
+                    openCategory(category, fromBackStack = true)
+                }
+            }
+            Screen.PLACE -> {
+                val place = arg as? SearchPlace
+                if (place == null) {
+                    fallback { "Saved place is null" }
+                } else {
+                    openPlaceCard(place, fromBackStack = true)
                 }
             }
         }
