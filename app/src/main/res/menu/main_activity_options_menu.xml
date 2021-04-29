@@ -8,6 +8,11 @@
         />
 
     <item
+        android:id="@+id/custom_theme_example"
+        android:title="@string/action_open_custom_theme_example"
+        />
+
+    <item
         android:id="@+id/open_forward_geocoding_kt_example"
         android:title="@string/action_open_forward_geocoding_kt_example"
         />
@@ -46,7 +51,6 @@
         android:id="@+id/open_category_search_java_example"
         android:title="@string/action_open_category_search_java_example"
         />
-
 
     <item
         android:id="@+id/open_offline_search_java_example"

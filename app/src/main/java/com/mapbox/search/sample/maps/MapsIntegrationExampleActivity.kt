@@ -3,6 +3,7 @@ package com.mapbox.search.sample.maps
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -28,10 +29,10 @@ import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.sources.getSourceAs
 import com.mapbox.maps.extension.style.style
+import com.mapbox.search.result.SearchResult
 import com.mapbox.search.sample.R
 import com.mapbox.search.sample.SearchViewBottomSheetsMediator
 import com.mapbox.search.sample.SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener
-import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
@@ -61,7 +62,7 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
         mapView.getMapboxMap().also { mapboxMap ->
             this.mapboxMap = mapboxMap
             mapboxMap.loadStyle(
-                style(styleUri = Style.MAPBOX_STREETS) {
+                style(styleUri = getMapStyleUri()) {
                     +geoJsonSource(SEARCH_PIN_SOURCE_ID) {
                         featureCollection(
                             FeatureCollection.fromFeatures(
@@ -163,6 +164,16 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         mapView.onDestroy()
+    }
+
+    private fun getMapStyleUri(): String {
+        val darkMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
+        return when (darkMode) {
+            Configuration.UI_MODE_NIGHT_YES -> Style.DARK
+            Configuration.UI_MODE_NIGHT_NO,
+            Configuration.UI_MODE_NIGHT_UNDEFINED -> Style.MAPBOX_STREETS
+            else -> error("Unknown night mode: $darkMode")
+        }
     }
 
     private fun showMarkers(coordinates: List<Point>) {

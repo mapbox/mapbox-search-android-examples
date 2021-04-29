@@ -5,15 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Configuration
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.mapbox.search.result.SearchResult
 import com.mapbox.search.sample.api.CategorySearchJavaExampleActivity
 import com.mapbox.search.sample.api.CategorySearchKotlinExampleActivity
 import com.mapbox.search.sample.api.ForwardGeocodingBatchResolvingJavaExampleActivity
@@ -27,7 +28,6 @@ import com.mapbox.search.sample.api.OfflineSearchKotlinExampleActivity
 import com.mapbox.search.sample.api.ReverseGeocodingJavaExampleActivity
 import com.mapbox.search.sample.api.ReverseGeocodingKotlinExampleActivity
 import com.mapbox.search.sample.maps.MapsIntegrationExampleActivity
-import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
@@ -141,6 +141,10 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.open_simple_ui -> {
                 startActivity(Intent(this, SimpleUiSearchActivity::class.java))
+                true
+            }
+            R.id.custom_theme_example -> {
+                startActivity(Intent(this, CustomThemeActivity::class.java))
                 true
             }
             R.id.open_forward_geocoding_kt_example -> {

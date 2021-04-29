@@ -3,8 +3,8 @@ package com.mapbox.search.sample.api;
 import android.os.Bundle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.search.MapboxSearchSdk;

@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/windowBackground"
+    android:theme="@style/SimpleUiTheme"
     tools:context=".SimpleUiSearchActivity"
     >
 
@@ -13,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:elevation="4dp"
-        android:theme="@style/Toolbar.Theme.Mapbox"
+        android:theme="@style/MapboxSearchSdk.Theme.Auto"
         />
 
     <com.mapbox.search.ui.view.SearchResultsView

@@ -7,6 +7,7 @@ import com.mapbox.geojson.Point
 import com.mapbox.search.MapboxSearchSdk
 import com.mapbox.search.OfflineReverseGeoOptions
 import com.mapbox.search.OfflineSearchEngine
+import com.mapbox.search.OfflineSearchEngine.AddRegionCallback
 import com.mapbox.search.ResponseInfo
 import com.mapbox.search.SearchCallback
 import com.mapbox.search.SearchRequestTask
@@ -42,7 +43,7 @@ class OfflineReverseGeocodingKotlinExampleActivity : Activity() {
             path = File(filesDir, "offline_data/germany").path,
             mapsFileNames = listOf("germany.map"),
             boundaryFileName = "germany.boundary",
-            callback = object : OfflineSearchEngine.AddRegionCallback {
+            callback = object : AddRegionCallback {
                 override fun onAdded() {
                     Log.i("SearchApiExample", "Offline region has been added")
                 }
