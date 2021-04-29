@@ -1,4 +1,4 @@
-package com.mapbox.search.demo
+package com.mapbox.search.sample
 
 import android.os.Bundle
 import android.os.Parcelable
@@ -34,7 +34,13 @@ class SearchViewBottomSheetsMediator(
                     openPlaceCard(SearchPlace.createFromSearchResult(searchResult, coordinate))
                 }
             }
-            addOnFavoriteClickListener { openPlaceCard(SearchPlace.createFromUserFavorite(it)) }
+            addOnFavoriteClickListener { openPlaceCard(SearchPlace.createFromIndexableRecord(it, it.coordinate)) }
+            addOnHistoryClickListener { historyRecord ->
+                val coordinate = historyRecord.coordinate
+                if (coordinate != null) {
+                    openPlaceCard(SearchPlace.createFromIndexableRecord(historyRecord, coordinate))
+                }
+            }
         }
 
         with(placeBottomSheetView) {

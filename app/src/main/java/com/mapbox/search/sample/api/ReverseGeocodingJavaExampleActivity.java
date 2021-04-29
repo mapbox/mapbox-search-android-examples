@@ -1,4 +1,4 @@
-package com.mapbox.search.demo.api;
+package com.mapbox.search.sample.api;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,19 +7,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.mapbox.search.CategorySearchEngine;
-import com.mapbox.search.CategorySearchOptions;
+import com.mapbox.geojson.Point;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.ResponseInfo;
+import com.mapbox.search.ReverseGeoOptions;
+import com.mapbox.search.ReverseGeocodingSearchEngine;
 import com.mapbox.search.SearchCallback;
 import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.result.SearchResult;
 
 import java.util.List;
 
-public class CategorySearchJavaExampleActivity extends AppCompatActivity {
+public class ReverseGeocodingJavaExampleActivity extends AppCompatActivity {
 
-    private CategorySearchEngine categorySearchEngine;
+    private ReverseGeocodingSearchEngine reverseGeocoding;
     private SearchRequestTask searchRequestTask;
 
     private final SearchCallback searchCallback = new SearchCallback() {
@@ -27,15 +28,15 @@ public class CategorySearchJavaExampleActivity extends AppCompatActivity {
         @Override
         public void onResults(@NonNull List<? extends SearchResult> results, @NonNull ResponseInfo responseInfo) {
             if (results.isEmpty()) {
-                Log.i("SearchApiExample", "No category search results");
+                Log.i("SearchApiExample", "No reverse geocoding results");
             } else {
-                Log.i("SearchApiExample", "Category search results: " + results);
+                Log.i("SearchApiExample", "Reverse geocoding results: " + results);
             }
         }
 
         @Override
         public void onError(@NonNull Exception e) {
-            Log.i("SearchApiExample", "Search error", e);
+            Log.i("SearchApiExample", "Reverse geocoding error", e);
         }
     };
 
@@ -43,13 +44,13 @@ public class CategorySearchJavaExampleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        categorySearchEngine = MapboxSearchSdk.createCategorySearchEngine();
+        reverseGeocoding = MapboxSearchSdk.createReverseGeocodingSearchEngine();
 
-        final CategorySearchOptions options = new CategorySearchOptions.Builder()
+        final ReverseGeoOptions options = new ReverseGeoOptions.Builder(Point.fromLngLat(2.294434, 48.858349))
             .limit(1)
             .build();
 
-        searchRequestTask = categorySearchEngine.search("cafe", options, searchCallback);
+        searchRequestTask = reverseGeocoding.search(options, searchCallback);
     }
 
     @Override

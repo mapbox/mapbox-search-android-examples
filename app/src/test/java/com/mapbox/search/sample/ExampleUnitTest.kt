@@ -1,4 +1,4 @@
-package com.mapbox.search.demo
+package com.mapbox.search.sample
 
 import org.junit.Test
 
