@@ -1,4 +1,4 @@
-package com.mapbox.search.demo.api
+package com.mapbox.search.sample.api
 
 import android.app.Activity
 import android.os.Bundle

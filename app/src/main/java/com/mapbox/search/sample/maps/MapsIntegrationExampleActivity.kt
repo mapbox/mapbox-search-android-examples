@@ -1,4 +1,4 @@
-package com.mapbox.search.demo.maps
+package com.mapbox.search.sample.maps
 
 import android.Manifest
 import android.content.Context
@@ -28,9 +28,9 @@ import com.mapbox.maps.extension.style.sources.generated.GeoJsonSource
 import com.mapbox.maps.extension.style.sources.generated.geoJsonSource
 import com.mapbox.maps.extension.style.sources.getSourceAs
 import com.mapbox.maps.extension.style.style
-import com.mapbox.search.demo.R
-import com.mapbox.search.demo.SearchViewBottomSheetsMediator
-import com.mapbox.search.demo.SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener
+import com.mapbox.search.sample.R
+import com.mapbox.search.sample.SearchViewBottomSheetsMediator
+import com.mapbox.search.sample.SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
