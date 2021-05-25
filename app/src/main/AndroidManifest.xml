@@ -47,6 +47,10 @@
         <activity android:name=".api.OfflineSearchKotlinExampleActivity" />
         <activity android:name=".api.OfflineReverseGeocodingKotlinExampleActivity" />
         <activity android:name=".api.OfflineReverseGeocodingJavaExampleActivity" />
+        <activity android:name=".api.HistoryDataProviderKotlinExample" />
+        <activity android:name=".api.HistoryDataProviderJavaExample" />
+        <activity android:name=".api.FavoritesDataProviderKotlinExample" />
+        <activity android:name=".api.FavoritesDataProviderJavaExample" />
 
         <activity
             android:name=".maps.MapsIntegrationExampleActivity"

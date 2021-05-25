@@ -17,10 +17,14 @@ import androidx.core.content.ContextCompat
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.sample.api.CategorySearchJavaExampleActivity
 import com.mapbox.search.sample.api.CategorySearchKotlinExampleActivity
+import com.mapbox.search.sample.api.FavoritesDataProviderJavaExample
+import com.mapbox.search.sample.api.FavoritesDataProviderKotlinExample
 import com.mapbox.search.sample.api.ForwardGeocodingBatchResolvingJavaExampleActivity
 import com.mapbox.search.sample.api.ForwardGeocodingBatchResolvingKotlinExampleActivity
 import com.mapbox.search.sample.api.ForwardGeocodingJavaExampleActivity
 import com.mapbox.search.sample.api.ForwardGeocodingKotlinExampleActivity
+import com.mapbox.search.sample.api.HistoryDataProviderJavaExample
+import com.mapbox.search.sample.api.HistoryDataProviderKotlinExample
 import com.mapbox.search.sample.api.OfflineReverseGeocodingJavaExampleActivity
 import com.mapbox.search.sample.api.OfflineReverseGeocodingKotlinExampleActivity
 import com.mapbox.search.sample.api.OfflineSearchJavaExampleActivity
@@ -193,6 +197,22 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.open_offline_reverse_geocoding_kt_example -> {
                 startActivity(Intent(this, OfflineReverseGeocodingKotlinExampleActivity::class.java))
+                true
+            }
+            R.id.open_history_data_provider_java_example -> {
+                startActivity(Intent(this, HistoryDataProviderJavaExample::class.java))
+                true
+            }
+            R.id.open_history_data_provider_kt_example -> {
+                startActivity(Intent(this, HistoryDataProviderKotlinExample::class.java))
+                true
+            }
+            R.id.open_favorites_data_provider_java_example -> {
+                startActivity(Intent(this, FavoritesDataProviderJavaExample::class.java))
+                true
+            }
+            R.id.open_favorites_data_provider_kt_example -> {
+                startActivity(Intent(this, FavoritesDataProviderKotlinExample::class.java))
                 true
             }
             R.id.open_maps_integration_example -> {
