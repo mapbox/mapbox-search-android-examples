@@ -91,6 +91,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Process bottom sheets events
+        @Suppress("EmptyFunctionBlock")
         cardsMediator.addSearchBottomSheetsEventsListener(object : SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener {
             override fun onOpenPlaceBottomSheet(place: SearchPlace) {}
 

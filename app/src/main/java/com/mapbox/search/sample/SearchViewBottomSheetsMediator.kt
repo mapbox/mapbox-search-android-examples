@@ -2,6 +2,8 @@ package com.mapbox.search.sample
 
 import android.os.Bundle
 import android.os.Parcelable
+import com.mapbox.geojson.Point
+import com.mapbox.search.MapboxSearchSdk
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
@@ -34,11 +36,19 @@ class SearchViewBottomSheetsMediator(
                     openPlaceCard(SearchPlace.createFromSearchResult(searchResult, coordinate))
                 }
             }
-            addOnFavoriteClickListener { openPlaceCard(SearchPlace.createFromIndexableRecord(it, it.coordinate)) }
+            addOnFavoriteClickListener {
+                val distance = userDistanceTo(it.coordinate)
+                openPlaceCard(SearchPlace.createFromIndexableRecord(it, it.coordinate, distance))
+            }
             addOnHistoryClickListener { historyRecord ->
                 val coordinate = historyRecord.coordinate
                 if (coordinate != null) {
-                    openPlaceCard(SearchPlace.createFromIndexableRecord(historyRecord, coordinate))
+                    val distance = userDistanceTo(coordinate)
+                    openPlaceCard(SearchPlace.createFromIndexableRecord(historyRecord, coordinate, distance))
+                } else {
+                    // TODO: For now we don't support handling HistoryRecord without coordinates,
+                    // because SDK adds records only that have coordinates. However, customers still can
+                    // add HistoryRecord w/o coordinates.
                 }
             }
         }
@@ -101,14 +111,26 @@ class SearchViewBottomSheetsMediator(
         eventsListeners.forEach { it.onOpenCategoriesBottomSheet(category) }
     }
 
-    private fun openPlaceCard(place: SearchPlace, fromBackStack: Boolean = false) {
+    private fun openPlaceCard(
+        place: SearchPlace,
+        fromBackStack: Boolean = false
+    ) {
         if (!fromBackStack) {
-            screensStack.push(Transaction(Screen.PLACE, place))
+            // Put place without distance into screen stack, so during
+            // reconfiguration we will recalculate distance.
+            screensStack.push(Transaction(Screen.PLACE, place.copy(distanceMeters = null)))
         }
-        placeBottomSheetView.open(place)
+
+        val placeWithDistance = if (place.distanceMeters == null) {
+            place.copy(distanceMeters = userDistanceTo(place.coordinate))
+        } else {
+            place
+        }
+
+        placeBottomSheetView.open(placeWithDistance)
         searchBottomSheetView.hide()
         categoriesBottomSheetView.hide()
-        eventsListeners.forEach { it.onOpenPlaceBottomSheet(place) }
+        eventsListeners.forEach { it.onOpenPlaceBottomSheet(placeWithDistance) }
     }
 
     private fun resetToRoot() {
@@ -212,6 +234,15 @@ class SearchViewBottomSheetsMediator(
 
         fun Bundle?.unwrapCategory(): Category? {
             return this?.getParcelable(KEY_CATEGORY)
+        }
+
+        fun userDistanceTo(destination: Point): Double? {
+            val currentLocation = MapboxSearchSdk.serviceProvider.locationProvider().getLocation()
+            return currentLocation?.run {
+                MapboxSearchSdk.serviceProvider
+                    .distanceCalculator(latitude = latitude())
+                    .distance(this, destination)
+            }
         }
 
         fun SearchCategoriesBottomSheetView.hideCardAndCancelLoading() {
