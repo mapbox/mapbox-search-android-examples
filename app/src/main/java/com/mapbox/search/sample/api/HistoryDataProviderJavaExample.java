@@ -6,6 +6,7 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mapbox.search.AsyncOperationTask;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.record.HistoryDataProvider;
 import com.mapbox.search.record.HistoryRecord;
@@ -14,13 +15,12 @@ import com.mapbox.search.record.IndexableDataProvider.CompletionCallback;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
-import java.util.concurrent.Future;
 
 public class HistoryDataProviderJavaExample extends AppCompatActivity {
 
     private final HistoryDataProvider historyDataProvider = MapboxSearchSdk.getServiceProvider().historyDataProvider();
 
-    private Future<List<HistoryRecord>> retrieveTask = null;
+    private AsyncOperationTask task = null;
 
     private final CompletionCallback<List<HistoryRecord>> callback = new CompletionCallback<List<HistoryRecord>>() {
         @Override
@@ -37,12 +37,12 @@ public class HistoryDataProviderJavaExample extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        retrieveTask = historyDataProvider.getAll(callback);
+        task = historyDataProvider.getAll(callback);
     }
 
     @Override
     protected void onDestroy() {
-        retrieveTask.cancel(true);
+        task.cancel();
         super.onDestroy();
     }
 }

@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.geojson.Point;
+import com.mapbox.search.AsyncOperationTask;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.record.FavoriteRecord;
 import com.mapbox.search.record.FavoritesDataProvider;
@@ -27,7 +28,7 @@ public class FavoritesDataProviderJavaExample extends AppCompatActivity {
 
     private final FavoritesDataProvider favoritesDataProvider = MapboxSearchSdk.getServiceProvider().favoritesDataProvider();
 
-    private Future<?> futureTask = null;
+    private AsyncOperationTask task = null;
 
     private final CompletionCallback<List<FavoriteRecord>> retrieveFavoritesCallback = new CompletionCallback<List<FavoriteRecord>>() {
         @Override
@@ -45,7 +46,7 @@ public class FavoritesDataProviderJavaExample extends AppCompatActivity {
         @Override
         public void onComplete(Unit result) {
             Log.i("SearchApiExample", "Favorite record added");
-            futureTask = favoritesDataProvider.getAll(retrieveFavoritesCallback);
+            task = favoritesDataProvider.getAll(retrieveFavoritesCallback);
         }
 
         @Override
@@ -77,13 +78,13 @@ public class FavoritesDataProviderJavaExample extends AppCompatActivity {
             null
         );
 
-        futureTask = favoritesDataProvider.add(newFavorite, addFavoriteCallback);
+        task = favoritesDataProvider.add(newFavorite, addFavoriteCallback);
     }
 
     @Override
     protected void onDestroy() {
         favoritesDataProvider.removeOnDataChangedListener(onDataChangedListener);
-        futureTask.cancel(true);
+        task.cancel();
         super.onDestroy();
     }
 }

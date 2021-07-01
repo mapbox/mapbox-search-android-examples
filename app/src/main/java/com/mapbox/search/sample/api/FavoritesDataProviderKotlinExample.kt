@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mapbox.geojson.Point
+import com.mapbox.search.AsyncOperationTask
 import com.mapbox.search.MapboxSearchSdk.serviceProvider
 import com.mapbox.search.record.FavoriteRecord
 import com.mapbox.search.record.IndexableDataProvider.CompletionCallback
@@ -11,13 +12,12 @@ import com.mapbox.search.record.LocalDataProvider.OnDataChangedListener
 import com.mapbox.search.result.SearchAddress
 import com.mapbox.search.result.SearchResultType
 import java.util.UUID
-import java.util.concurrent.Future
 
 class FavoritesDataProviderKotlinExample : AppCompatActivity() {
 
     private val favoritesDataProvider = serviceProvider.favoritesDataProvider()
 
-    private lateinit var futureTask: Future<*>
+    private lateinit var task: AsyncOperationTask
 
     private val retrieveFavoritesCallback: CompletionCallback<List<FavoriteRecord>> =
         object : CompletionCallback<List<FavoriteRecord>> {
@@ -33,7 +33,7 @@ class FavoritesDataProviderKotlinExample : AppCompatActivity() {
     private val addFavoriteCallback: CompletionCallback<Unit> = object : CompletionCallback<Unit> {
         override fun onComplete(result: Unit) {
             Log.i("SearchApiExample", "Favorite record added")
-            futureTask = favoritesDataProvider.getAll(retrieveFavoritesCallback)
+            task = favoritesDataProvider.getAll(retrieveFavoritesCallback)
         }
 
         override fun onError(e: Exception) {
@@ -66,12 +66,12 @@ class FavoritesDataProviderKotlinExample : AppCompatActivity() {
             metadata = null
         )
 
-        futureTask = favoritesDataProvider.add(newFavorite, addFavoriteCallback)
+        task = favoritesDataProvider.add(newFavorite, addFavoriteCallback)
     }
 
     override fun onDestroy() {
         favoritesDataProvider.removeOnDataChangedListener(onDataChangedListener)
-        futureTask.cancel(true)
+        task.cancel()
         super.onDestroy()
     }
 }
