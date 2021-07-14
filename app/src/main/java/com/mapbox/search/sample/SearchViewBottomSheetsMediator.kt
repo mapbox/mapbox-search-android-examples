@@ -103,7 +103,7 @@ class SearchViewBottomSheetsMediator(
         if (fromBackStack) {
             categoriesBottomSheetView.restorePreviousNonHiddenState(category)
         } else {
-            screensStack.push(Transaction(Screen.CATEGORIES, wrapCategory(category)))
+            screensStack.push(Transaction(Screen.CATEGORIES, category))
             categoriesBottomSheetView.open(category)
         }
         searchBottomSheetView.hide()
@@ -167,7 +167,7 @@ class SearchViewBottomSheetsMediator(
     private fun Transaction.execute() {
         when (screen) {
             Screen.CATEGORIES -> {
-                val category = (arg as? Bundle)?.unwrapCategory()
+                val category = arg as? Category
                 if (category == null) {
                     fallback { "Saved category is null" }
                 } else {
@@ -223,18 +223,6 @@ class SearchViewBottomSheetsMediator(
     private companion object {
 
         const val KEY_STATE_EXTERNAL_BACK_STACK = "SearchViewBottomSheetsMediator.state.external.back_stack"
-
-        const val KEY_CATEGORY = "SearchViewBottomSheetsMediator.key.category"
-
-        fun wrapCategory(category: Category): Bundle {
-            return Bundle().apply {
-                putParcelable(KEY_CATEGORY, category)
-            }
-        }
-
-        fun Bundle?.unwrapCategory(): Category? {
-            return this?.getParcelable(KEY_CATEGORY)
-        }
 
         fun userDistanceTo(destination: Point): Double? {
             val currentLocation = MapboxSearchSdk.serviceProvider.locationProvider().getLocation()
