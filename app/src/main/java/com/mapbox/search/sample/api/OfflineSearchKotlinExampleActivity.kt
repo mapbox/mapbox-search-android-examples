@@ -61,8 +61,8 @@ class OfflineSearchKotlinExampleActivity : Activity() {
          */
         searchEngine.addOfflineRegion(
             path = File(filesDir, "offline_data/germany").path,
-            mapsFileNames = listOf("germany.map"),
-            boundaryFileName = "germany.boundary",
+            mapsFileNames = listOf("germany.map.cont"),
+            boundaryFileName = "germany.boundary.cont",
             callback = object : OfflineSearchEngine.AddRegionCallback {
                 override fun onAdded() {
                     Log.i("SearchApiExample", "Offline region has been added")

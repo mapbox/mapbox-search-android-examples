@@ -50,8 +50,8 @@ public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivit
          */
         searchEngine.addOfflineRegion(
             new File(getFilesDir(), "offline_data/germany").getPath(),
-            Collections.singletonList("germany.map"),
-            "germany.boundary",
+            Collections.singletonList("germany.map.cont"),
+            "germany.boundary.cont",
             new OfflineSearchEngine.AddRegionCallback() {
                 @Override
                 public void onAdded() {
