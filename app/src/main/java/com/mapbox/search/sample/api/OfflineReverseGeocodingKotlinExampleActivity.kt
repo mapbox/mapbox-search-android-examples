@@ -4,20 +4,32 @@ import android.app.Activity
 import android.os.Bundle
 import android.util.Log
 import com.mapbox.geojson.Point
+import com.mapbox.search.AsyncOperationTask
+import com.mapbox.search.CompletionCallback
 import com.mapbox.search.MapboxSearchSdk
 import com.mapbox.search.OfflineReverseGeoOptions
 import com.mapbox.search.OfflineSearchEngine
-import com.mapbox.search.OfflineSearchEngine.AddRegionCallback
+import com.mapbox.search.OfflineTileRegion
 import com.mapbox.search.ResponseInfo
 import com.mapbox.search.SearchCallback
 import com.mapbox.search.SearchRequestTask
 import com.mapbox.search.result.SearchResult
-import java.io.File
 
 class OfflineReverseGeocodingKotlinExampleActivity : Activity() {
 
     private lateinit var searchEngine: OfflineSearchEngine
-    private lateinit var searchRequestTask: SearchRequestTask
+    private lateinit var tilesLoadingTask: AsyncOperationTask
+    private var searchRequestTask: SearchRequestTask? = null
+
+    private val engineReadyCallback = object : OfflineSearchEngine.EngineReadyCallback {
+        override fun onEngineReady(offlineTileRegions: List<OfflineTileRegion>) {
+            Log.i("SearchApiExample", "Engine is ready, available regions: $offlineTileRegions")
+        }
+
+        override fun onError(e: Exception) {
+            Log.i("SearchApiExample", "Error during engine initialization", e)
+        }
+    }
 
     private val searchCallback = object : SearchCallback {
 
@@ -34,34 +46,35 @@ class OfflineReverseGeocodingKotlinExampleActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         searchEngine = MapboxSearchSdk.getOfflineSearchEngine()
+        searchEngine.addEngineReadyCallback(engineReadyCallback)
 
-        /**
-         * TODO Change function arguments to what's available on your device.
-         * Make sure each region added only once.
-         */
-        searchEngine.addOfflineRegion(
-            path = File(filesDir, "offline_data/germany").path,
-            mapsFileNames = listOf("germany.map.cont"),
-            boundaryFileName = "germany.boundary.cont",
-            callback = object : AddRegionCallback {
-                override fun onAdded() {
-                    Log.i("SearchApiExample", "Offline region has been added")
+        val dcLocation = Point.fromLngLat(-77.0339911055176, 38.899920004207516)
+
+        Log.i("SearchApiExample", "Loading tiles...")
+        tilesLoadingTask = searchEngine.loadTileRegion(
+            groupId = "Washington DC",
+            geometry = dcLocation,
+            callback = object : CompletionCallback<List<OfflineTileRegion>> {
+                override fun onComplete(result: List<OfflineTileRegion>) {
+                    Log.i("SearchApiExample", "Tiles successfully loaded")
+
+                    searchRequestTask = searchEngine.reverseGeocoding(
+                        OfflineReverseGeoOptions(center = dcLocation),
+                        searchCallback
+                    )
                 }
 
-                override fun onError(e: java.lang.Exception) {
-                    Log.i("SearchApiExample", "Unable to add offline region", e)
+                override fun onError(e: Exception) {
+                    Log.i("SearchApiExample", "Tiles loading error", e)
                 }
             }
-        )
-
-        searchRequestTask = searchEngine.reverseGeocoding(
-            OfflineReverseGeoOptions(center = Point.fromLngLat(13.409450, 52.520831)),
-            searchCallback
         )
     }
 
     override fun onDestroy() {
-        searchRequestTask.cancel()
+        searchEngine.removeEngineReadyCallback(engineReadyCallback)
+        tilesLoadingTask.cancel()
+        searchRequestTask?.cancel()
         super.onDestroy()
     }
 }

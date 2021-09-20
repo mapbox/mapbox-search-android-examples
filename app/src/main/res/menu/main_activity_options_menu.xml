@@ -8,6 +8,16 @@
         />
 
     <item
+        android:id="@+id/open_custom_data_provider_kt_example"
+        android:title="@string/action_open_custom_data_provider_kt_example"
+        />
+
+    <item
+        android:id="@+id/open_custom_data_provider_java_example"
+        android:title="@string/action_open_custom_data_provider_java_example"
+        />
+
+    <item
         android:id="@+id/custom_theme_example"
         android:title="@string/action_open_custom_theme_example"
         />

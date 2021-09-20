@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.sample.api.CategorySearchJavaExampleActivity
 import com.mapbox.search.sample.api.CategorySearchKotlinExampleActivity
+import com.mapbox.search.sample.api.CustomIndexableDataProviderJavaExample
+import com.mapbox.search.sample.api.CustomIndexableDataProviderKotlinExample
 import com.mapbox.search.sample.api.FavoritesDataProviderJavaExample
 import com.mapbox.search.sample.api.FavoritesDataProviderKotlinExample
 import com.mapbox.search.sample.api.ForwardGeocodingBatchResolvingJavaExampleActivity
@@ -146,6 +148,14 @@ class MainActivity : AppCompatActivity() {
         return when (item.itemId) {
             R.id.open_simple_ui -> {
                 startActivity(Intent(this, SimpleUiSearchActivity::class.java))
+                true
+            }
+            R.id.open_custom_data_provider_kt_example -> {
+                startActivity(Intent(this, CustomIndexableDataProviderKotlinExample::class.java))
+                true
+            }
+            R.id.open_custom_data_provider_java_example -> {
+                startActivity(Intent(this, CustomIndexableDataProviderJavaExample::class.java))
                 true
             }
             R.id.custom_theme_example -> {

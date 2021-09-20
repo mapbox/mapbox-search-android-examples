@@ -20,6 +20,8 @@
     <string name="action_open_history_data_provider_java_example">Open History Data Provider Java example</string>
     <string name="action_open_favorites_data_provider_kt_example">Open Favorites Data Provider Kotlin example</string>
     <string name="action_open_favorites_data_provider_java_example">Open Favorites Data Provider Java example</string>
+    <string name="action_open_custom_data_provider_java_example">Open custom data provider Java example</string>
+    <string name="action_open_custom_data_provider_kt_example">Open custom data provider Kotlin example</string>
 
     <string name="action_open_maps_integration_example">Open Maps integration example</string>
 
