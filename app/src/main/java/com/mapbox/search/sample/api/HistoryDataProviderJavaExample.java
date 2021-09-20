@@ -4,15 +4,14 @@ import android.os.Bundle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.search.AsyncOperationTask;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.record.HistoryDataProvider;
 import com.mapbox.search.record.HistoryRecord;
-import com.mapbox.search.record.IndexableDataProvider.CompletionCallback;
-
-import org.jetbrains.annotations.NotNull;
+import com.mapbox.search.CompletionCallback;
 
 import java.util.List;
 
@@ -29,7 +28,7 @@ public class HistoryDataProviderJavaExample extends AppCompatActivity {
         }
 
         @Override
-        public void onError(@NotNull Exception e) {
+        public void onError(@NonNull Exception e) {
             Log.i("SearchApiExample", "Unable to retrieve history records", e);
         }
     };

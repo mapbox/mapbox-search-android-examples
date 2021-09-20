@@ -8,22 +8,38 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.mapbox.geojson.Point;
+import com.mapbox.search.AsyncOperationTask;
+import com.mapbox.search.CompletionCallback;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.OfflineReverseGeoOptions;
 import com.mapbox.search.OfflineSearchEngine;
+import com.mapbox.search.OfflineSearchEngine.EngineReadyCallback;
+import com.mapbox.search.OfflineTileRegion;
 import com.mapbox.search.ResponseInfo;
 import com.mapbox.search.SearchCallback;
 import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.result.SearchResult;
 
-import java.io.File;
-import java.util.Collections;
 import java.util.List;
 
 public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivity {
 
     private OfflineSearchEngine searchEngine;
+    private AsyncOperationTask tilesLoadingTask;
+    @Nullable
     private SearchRequestTask searchRequestTask;
+
+    private final EngineReadyCallback engineReadyCallback = new EngineReadyCallback() {
+        @Override
+        public void onEngineReady(@NonNull List<OfflineTileRegion> offlineTileRegions) {
+            Log.i("SearchApiExample", "Engine is ready, available regions: " + offlineTileRegions);
+        }
+
+        @Override
+        public void onError(@NonNull Exception e) {
+            Log.i("SearchApiExample", "Error during engine initialization", e);
+        }
+    };
 
     private final SearchCallback searchCallback = new SearchCallback() {
 
@@ -43,37 +59,40 @@ public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivit
         super.onCreate(savedInstanceState);
 
         searchEngine = MapboxSearchSdk.getOfflineSearchEngine();
+        searchEngine.addEngineReadyCallback(engineReadyCallback);
 
-        /*
-         * TODO Change function arguments to what's available on your device.
-         * Make sure each region added only once.
-         */
-        searchEngine.addOfflineRegion(
-            new File(getFilesDir(), "offline_data/germany").getPath(),
-            Collections.singletonList("germany.map.cont"),
-            "germany.boundary.cont",
-            new OfflineSearchEngine.AddRegionCallback() {
+        final Point dcLocation = Point.fromLngLat(-77.0339911055176, 38.899920004207516);
+
+        Log.i("SearchApiExample", "Loading tiles...");
+        tilesLoadingTask = searchEngine.loadTileRegion(
+            "Washington DC",
+            dcLocation,
+            new CompletionCallback<List<OfflineTileRegion>>() {
                 @Override
-                public void onAdded() {
-                    Log.i("SearchApiExample", "Offline region has been added");
+                public void onComplete(List<OfflineTileRegion> result) {
+                    Log.i("SearchApiExample", "Tiles successfully loaded");
+
+                    searchRequestTask = searchEngine.reverseGeocoding(
+                        new OfflineReverseGeoOptions(dcLocation),
+                        searchCallback
+                    );
                 }
 
                 @Override
                 public void onError(@NonNull Exception e) {
-                    Log.i("SearchApiExample", "Unable to add offline region", e);
+                    Log.i("SearchApiExample", "Tiles loading error", e);
                 }
             }
-        );
-
-        searchRequestTask = searchEngine.reverseGeocoding(
-            new OfflineReverseGeoOptions(Point.fromLngLat(13.409450, 52.520831)),
-            searchCallback
         );
     }
 
     @Override
     protected void onDestroy() {
-        searchRequestTask.cancel();
+        searchEngine.removeEngineReadyCallback(engineReadyCallback);
+        tilesLoadingTask.cancel();
+        if (searchRequestTask != null) {
+            searchRequestTask.cancel();
+        }
         super.onDestroy();
     }
 }

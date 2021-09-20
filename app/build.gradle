@@ -9,7 +9,7 @@ if (mapboxApiToken == null) {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         buildConfigField "String", "MAPBOX_API_TOKEN", "\"$mapboxApiToken\""
@@ -17,7 +17,7 @@ android {
 
         applicationId "com.mapbox.search.demo"
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 
@@ -51,10 +51,10 @@ dependencies {
 
     // Loader module is excluded just for custom library loader example.
     // Don't exclude it if you are good with a default loader.
-    implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.18") {
+    implementation ("com.mapbox.search:mapbox-search-android-ui:1.0.0-beta.19") {
         exclude group: "com.mapbox.common", module: "loader"
     }
-    implementation ("com.mapbox.maps:android:10.0.0-rc.5") {
+    implementation ("com.mapbox.maps:android:10.0.0-rc.8") {
         exclude group: "com.mapbox.common", module: "loader"
     }
 
