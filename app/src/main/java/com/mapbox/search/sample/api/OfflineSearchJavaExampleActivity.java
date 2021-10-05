@@ -7,6 +7,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mapbox.common.TileRegionLoadProgress;
+import com.mapbox.common.TileRegionLoadProgressCallback;
 import com.mapbox.geojson.Point;
 import com.mapbox.search.AsyncOperationTask;
 import com.mapbox.search.CompletionCallback;
@@ -81,6 +83,9 @@ public class OfflineSearchJavaExampleActivity extends AppCompatActivity {
         tilesLoadingTask = searchEngine.loadTileRegion(
             "Washington DC",
             Point.fromLngLat(-77.0339911055176, 38.899920004207516),
+            progress -> {
+                Log.i("SearchApiExample", "Loading progress: " + progress);
+            },
             new CompletionCallback<List<OfflineTileRegion>>() {
                 @Override
                 public void onComplete(List<OfflineTileRegion> result) {
