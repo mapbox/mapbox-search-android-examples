@@ -22,6 +22,7 @@ import com.mapbox.search.result.SearchResultType
 import com.mapbox.search.result.SearchSuggestion
 import java.util.ArrayList
 import java.util.UUID
+import java.util.concurrent.Executor
 
 class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
 
@@ -143,73 +144,104 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
 
         override fun registerIndexableDataProviderEngineLayer(
             dataProviderEngineLayer: IndexableDataProviderEngineLayer,
+            executor: Executor,
             callback: CompletionCallback<Unit>
         ): AsyncOperationTask {
             dataProviderEngineLayer.addAll(records.values.toList())
             dataProviderEngineLayers.add(dataProviderEngineLayer)
-            callback.onComplete(Unit)
+            executor.execute {
+                callback.onComplete(Unit)
+            }
             return CompletedAsyncOperationTask
         }
 
         override fun unregisterIndexableDataProviderEngineLayer(
             dataProviderEngineLayer: IndexableDataProviderEngineLayer,
+            executor: Executor,
             callback: CompletionCallback<Boolean>
         ): AsyncOperationTask {
             val isRemoved = dataProviderEngineLayers.remove(dataProviderEngineLayer)
             if (isRemoved) {
                 dataProviderEngineLayer.clear()
             }
-            callback.onComplete(isRemoved)
+            executor.execute {
+                callback.onComplete(isRemoved)
+            }
             return CompletedAsyncOperationTask
         }
 
-        override operator fun get(id: String, callback: CompletionCallback<in R?>): AsyncOperationTask {
-            callback.onComplete(records[id])
+        override operator fun get(
+            id: String,
+            executor: Executor,
+            callback: CompletionCallback<in R?>
+        ): AsyncOperationTask {
+            executor.execute {
+                callback.onComplete(records[id])
+            }
             return CompletedAsyncOperationTask
         }
 
-        override fun getAll(callback: CompletionCallback<List<R>>): AsyncOperationTask {
-            callback.onComplete(ArrayList(records.values))
+        override fun getAll(executor: Executor, callback: CompletionCallback<List<R>>): AsyncOperationTask {
+            executor.execute {
+                callback.onComplete(ArrayList(records.values))
+            }
             return CompletedAsyncOperationTask
         }
 
-        override fun contains(id: String, callback: CompletionCallback<Boolean>): AsyncOperationTask {
-            callback.onComplete(records[id] != null)
+        override fun contains(
+            id: String,
+            executor: Executor,
+            callback: CompletionCallback<Boolean>
+        ): AsyncOperationTask {
+            executor.execute {
+                callback.onComplete(records[id] != null)
+            }
             return CompletedAsyncOperationTask
         }
 
-        override fun add(record: R, callback: CompletionCallback<Unit>): AsyncOperationTask {
+        override fun add(record: R, executor: Executor, callback: CompletionCallback<Unit>): AsyncOperationTask {
             records[record.id] = record
-            callback.onComplete(Unit)
+            executor.execute {
+                callback.onComplete(Unit)
+            }
             return CompletedAsyncOperationTask
         }
 
         override fun addAll(
             records: List<R>,
+            executor: Executor,
             callback: CompletionCallback<Unit>
         ): AsyncOperationTask {
             for (record in records) {
                 this.records[record.id] = record
             }
-            callback.onComplete(Unit)
+            executor.execute {
+                callback.onComplete(Unit)
+            }
             return CompletedAsyncOperationTask
         }
 
-        override fun update(record: R, callback: CompletionCallback<Unit>): AsyncOperationTask {
+        override fun update(record: R, executor: Executor, callback: CompletionCallback<Unit>): AsyncOperationTask {
             records[record.id] = record
-            callback.onComplete(Unit)
+            executor.execute {
+                callback.onComplete(Unit)
+            }
             return CompletedAsyncOperationTask
         }
 
-        override fun remove(id: String, callback: CompletionCallback<Boolean>): AsyncOperationTask {
+        override fun remove(id: String, executor: Executor, callback: CompletionCallback<Boolean>): AsyncOperationTask {
             val isRemoved = records.remove(id) != null
-            callback.onComplete(isRemoved)
+            executor.execute {
+                callback.onComplete(isRemoved)
+            }
             return CompletedAsyncOperationTask
         }
 
-        override fun clear(callback: CompletionCallback<Unit>): AsyncOperationTask {
+        override fun clear(executor: Executor, callback: CompletionCallback<Unit>): AsyncOperationTask {
             records.clear()
-            callback.onComplete(Unit)
+            executor.execute {
+                callback.onComplete(Unit)
+            }
             return CompletedAsyncOperationTask
         }
     }

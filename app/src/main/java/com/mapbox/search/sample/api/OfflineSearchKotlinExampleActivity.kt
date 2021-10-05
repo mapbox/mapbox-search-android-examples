@@ -74,7 +74,10 @@ class OfflineSearchKotlinExampleActivity : Activity() {
         tilesLoadingTask = searchEngine.loadTileRegion(
             groupId = "Washington DC",
             geometry = Point.fromLngLat(-77.0339911055176, 38.899920004207516),
-            callback = object : CompletionCallback<List<OfflineTileRegion>> {
+            progressCallback = { progress ->
+                Log.i("SearchApiExample", "Loading progress: $progress")
+            },
+            completionCallback = object : CompletionCallback<List<OfflineTileRegion>> {
                 override fun onComplete(result: List<OfflineTileRegion>) {
                     Log.i("SearchApiExample", "Tiles successfully loaded")
 

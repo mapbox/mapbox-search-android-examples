@@ -54,7 +54,10 @@ class OfflineReverseGeocodingKotlinExampleActivity : Activity() {
         tilesLoadingTask = searchEngine.loadTileRegion(
             groupId = "Washington DC",
             geometry = dcLocation,
-            callback = object : CompletionCallback<List<OfflineTileRegion>> {
+            progressCallback = { progress ->
+                Log.i("SearchApiExample", "Loading progress: $progress")
+            },
+            completionCallback = object : CompletionCallback<List<OfflineTileRegion>> {
                 override fun onComplete(result: List<OfflineTileRegion>) {
                     Log.i("SearchApiExample", "Tiles successfully loaded")
 

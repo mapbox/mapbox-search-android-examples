@@ -21,6 +21,8 @@ import com.mapbox.search.record.IndexableRecord;
 import com.mapbox.search.result.SearchResult;
 import com.mapbox.search.result.SearchResultType;
 import com.mapbox.search.result.SearchSuggestion;
+import com.mapbox.search.utils.concurrent.SearchSdkMainThreadWorker;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -29,6 +31,8 @@ import java.util.List;
 import androidx.annotation.NonNull;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executor;
+
 import kotlin.Unit;
 
 public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
@@ -149,6 +153,8 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
         private final List<IndexableDataProviderEngineLayer> dataProviderEngineLayers = new ArrayList<>();
         private final Map<String, R> records = new LinkedHashMap<>();
 
+        private final Executor mainThreadExecutor = SearchSdkMainThreadWorker.INSTANCE.getMainExecutor();
+
         InMemoryDataProvider(List<R> records) {
             for (R record : records) {
                 this.records.put(record.getId(), record);
@@ -165,11 +171,36 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
         @Override
         public AsyncOperationTask registerIndexableDataProviderEngineLayer(
             @NonNull IndexableDataProviderEngineLayer dataProviderEngine,
+            @NonNull Executor executor,
             @NonNull CompletionCallback<Unit> callback
         ) {
             dataProviderEngine.addAll(records.values());
             dataProviderEngineLayers.add(dataProviderEngine);
-            callback.onComplete(Unit.INSTANCE);
+            executor.execute(() -> callback.onComplete(Unit.INSTANCE));
+            return CompletedAsyncOperationTask.getInstance();
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask registerIndexableDataProviderEngineLayer(
+            @NonNull IndexableDataProviderEngineLayer dataProviderEngine,
+            @NonNull CompletionCallback<Unit> callback
+        ) {
+            return registerIndexableDataProviderEngineLayer(dataProviderEngine, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask unregisterIndexableDataProviderEngineLayer(
+            @NonNull IndexableDataProviderEngineLayer dataProviderEngine,
+            @NonNull Executor executor,
+            @NonNull CompletionCallback<Boolean> callback
+        ) {
+            boolean isRemoved = dataProviderEngineLayers.remove(dataProviderEngine);
+            if (isRemoved) {
+                dataProviderEngine.clear();
+            }
+            executor.execute(() -> callback.onComplete(isRemoved));
             return CompletedAsyncOperationTask.getInstance();
         }
 
@@ -179,78 +210,142 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
             @NonNull IndexableDataProviderEngineLayer dataProviderEngine,
             @NonNull CompletionCallback<Boolean> callback
         ) {
-            boolean isRemoved = dataProviderEngineLayers.remove(dataProviderEngine);
-            if (isRemoved) {
-                dataProviderEngine.clear();
-            }
-            callback.onComplete(isRemoved);
+            return unregisterIndexableDataProviderEngineLayer(dataProviderEngine, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask get(
+            @NonNull String id,
+            @NonNull Executor executor,
+            @NonNull CompletionCallback<? super R> callback
+        ) {
+            executor.execute(() -> callback.onComplete(records.get(id)));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask get(@NonNull String id, @NonNull CompletionCallback<? super R> callback) {
-            callback.onComplete(records.get(id));
+            return get(id, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask getAll(@NonNull Executor executor, @NonNull CompletionCallback<List<R>> callback) {
+            executor.execute(() -> callback.onComplete(new ArrayList<>(records.values())));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask getAll(@NonNull CompletionCallback<List<R>> callback) {
-            callback.onComplete(new ArrayList<>(records.values()));
+            return getAll(mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask contains(
+            @NonNull String id,
+            @NonNull Executor executor,
+            @NonNull CompletionCallback<Boolean> callback
+        ) {
+            executor.execute(() -> callback.onComplete(records.get(id) != null));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask contains(@NonNull String id, @NonNull CompletionCallback<Boolean> callback) {
-            callback.onComplete(records.get(id) != null);
+            return contains(id, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask add(
+            @NonNull R record,
+            @NonNull Executor executor,
+            @NonNull CompletionCallback<Unit> callback
+        ) {
+            records.put(record.getId(), record);
+            executor.execute(() -> callback.onComplete(Unit.INSTANCE));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask add(@NonNull R record, @NonNull CompletionCallback<Unit> callback) {
-            records.put(record.getId(), record);
-            callback.onComplete(Unit.INSTANCE);
-            return CompletedAsyncOperationTask.getInstance();
+            return add(record, mainThreadExecutor, callback);
         }
 
         @NonNull
         @Override
         public AsyncOperationTask addAll(
             @NonNull List<? extends R> records,
+            @NonNull Executor executor,
             @NonNull CompletionCallback<Unit> callback
         ) {
             for (R record: records) {
                 this.records.put(record.getId(), record);
             }
-            callback.onComplete(Unit.INSTANCE);
+            executor.execute(() -> callback.onComplete(Unit.INSTANCE));
+            return CompletedAsyncOperationTask.getInstance();
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask addAll(@NonNull List<? extends R> records, @NonNull CompletionCallback<Unit> callback) {
+            return addAll(records, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask update(
+            @NonNull R record,
+            @NonNull Executor executor,
+            @NonNull CompletionCallback<Unit> callback
+        ) {
+            records.put(record.getId(), record);
+            executor.execute(() -> callback.onComplete(Unit.INSTANCE));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask update(@NonNull R record, @NonNull CompletionCallback<Unit> callback) {
-            records.put(record.getId(), record);
-            callback.onComplete(Unit.INSTANCE);
+            return update(record, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask remove(
+            @NonNull String id,
+            @NonNull Executor executor,
+            @NonNull CompletionCallback<Boolean> callback
+        ) {
+            boolean isRemoved = records.remove(id) != null;
+            executor.execute(() -> callback.onComplete(isRemoved));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask remove(@NonNull String id, @NonNull CompletionCallback<Boolean> callback) {
-            boolean isRemoved = records.remove(id) != null;
-            callback.onComplete(isRemoved);
+            return remove(id, mainThreadExecutor, callback);
+        }
+
+        @NonNull
+        @Override
+        public AsyncOperationTask clear(@NonNull Executor executor, @NonNull CompletionCallback<Unit> callback) {
+            records.clear();
+            executor.execute(() -> callback.onComplete(Unit.INSTANCE));
             return CompletedAsyncOperationTask.getInstance();
         }
 
         @NonNull
         @Override
         public AsyncOperationTask clear(@NonNull CompletionCallback<Unit> callback) {
-            records.clear();
-            callback.onComplete(Unit.INSTANCE);
-            return CompletedAsyncOperationTask.getInstance();
+            return clear(mainThreadExecutor, callback);
         }
     }
 

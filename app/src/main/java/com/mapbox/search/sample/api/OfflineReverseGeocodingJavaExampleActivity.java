@@ -67,6 +67,9 @@ public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivit
         tilesLoadingTask = searchEngine.loadTileRegion(
             "Washington DC",
             dcLocation,
+            progress -> {
+                Log.i("SearchApiExample", "Loading progress: " + progress);
+            },
             new CompletionCallback<List<OfflineTileRegion>>() {
                 @Override
                 public void onComplete(List<OfflineTileRegion> result) {
