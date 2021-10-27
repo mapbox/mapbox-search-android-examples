@@ -35,6 +35,8 @@
             android:theme="@style/CustomTheme"
             />
 
+        <activity android:name=".api.CustomIndexableDataProviderKotlinExample" />
+        <activity android:name=".api.CustomIndexableDataProviderJavaExample" />
         <activity android:name=".api.ForwardGeocodingKotlinExampleActivity" />
         <activity android:name=".api.ForwardGeocodingJavaExampleActivity" />
         <activity android:name=".api.ForwardGeocodingBatchResolvingKotlinExampleActivity" />
@@ -43,8 +45,8 @@
         <activity android:name=".api.ReverseGeocodingJavaExampleActivity" />
         <activity android:name=".api.CategorySearchKotlinExampleActivity" />
         <activity android:name=".api.CategorySearchJavaExampleActivity" />
-        <activity android:name=".api.OfflineSearchJavaExampleActivity" />
         <activity android:name=".api.OfflineSearchKotlinExampleActivity" />
+        <activity android:name=".api.OfflineSearchJavaExampleActivity" />
         <activity android:name=".api.OfflineReverseGeocodingKotlinExampleActivity" />
         <activity android:name=".api.OfflineReverseGeocodingJavaExampleActivity" />
         <activity android:name=".api.HistoryDataProviderKotlinExample" />
