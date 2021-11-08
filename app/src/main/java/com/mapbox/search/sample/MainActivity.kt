@@ -35,6 +35,7 @@ import com.mapbox.search.sample.api.ReverseGeocodingJavaExampleActivity
 import com.mapbox.search.sample.api.ReverseGeocodingKotlinExampleActivity
 import com.mapbox.search.sample.maps.MapsIntegrationExampleActivity
 import com.mapbox.search.ui.view.SearchBottomSheetView
+import com.mapbox.search.ui.view.SearchMode
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlace
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         searchBottomSheetView = findViewById(R.id.search_view)
         searchBottomSheetView.initializeSearch(savedInstanceState, configuration)
         searchBottomSheetView.isHideableByDrag = true
+        searchBottomSheetView.searchMode = SearchMode.AUTO
 
         searchPlaceView = findViewById(R.id.search_place_view)
         searchCategoriesView = findViewById(R.id.search_categories_view)

@@ -7,32 +7,34 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.mapbox.common.Cancelable;
+import com.mapbox.common.TileRegionLoadOptions;
+import com.mapbox.common.TileStore;
+import com.mapbox.common.TilesetDescriptor;
 import com.mapbox.geojson.Point;
-import com.mapbox.search.AsyncOperationTask;
-import com.mapbox.search.CompletionCallback;
 import com.mapbox.search.MapboxSearchSdk;
 import com.mapbox.search.OfflineReverseGeoOptions;
 import com.mapbox.search.OfflineSearchEngine;
 import com.mapbox.search.OfflineSearchEngine.EngineReadyCallback;
-import com.mapbox.search.OfflineTileRegion;
 import com.mapbox.search.ResponseInfo;
 import com.mapbox.search.SearchCallback;
 import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.result.SearchResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivity {
 
     private OfflineSearchEngine searchEngine;
-    private AsyncOperationTask tilesLoadingTask;
+    private Cancelable tilesLoadingTask;
     @Nullable
     private SearchRequestTask searchRequestTask;
 
     private final EngineReadyCallback engineReadyCallback = new EngineReadyCallback() {
         @Override
-        public void onEngineReady(@NonNull List<OfflineTileRegion> offlineTileRegions) {
-            Log.i("SearchApiExample", "Engine is ready, available regions: " + offlineTileRegions);
+        public void onEngineReady() {
+            Log.i("SearchApiExample", "Engine is ready");
         }
 
         @Override
@@ -61,29 +63,36 @@ public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivit
         searchEngine = MapboxSearchSdk.getOfflineSearchEngine();
         searchEngine.addEngineReadyCallback(engineReadyCallback);
 
+        final TileStore tileStore = searchEngine.getTileStore();
+
         final Point dcLocation = Point.fromLngLat(-77.0339911055176, 38.899920004207516);
 
+        final List<TilesetDescriptor> descriptors = new ArrayList<>();
+        descriptors.add(searchEngine.createBoundariesTilesetDescriptor());
+        descriptors.add(searchEngine.createTilesetDescriptor());
+
+        final TileRegionLoadOptions tileRegionLoadOptions = new TileRegionLoadOptions.Builder()
+            .descriptors(descriptors)
+            .geometry(dcLocation)
+            .acceptExpired(true)
+            .build();
+
         Log.i("SearchApiExample", "Loading tiles...");
-        tilesLoadingTask = searchEngine.loadTileRegion(
+
+        tilesLoadingTask = tileStore.loadTileRegion(
             "Washington DC",
-            dcLocation,
-            progress -> {
-                Log.i("SearchApiExample", "Loading progress: " + progress);
-            },
-            new CompletionCallback<List<OfflineTileRegion>>() {
-                @Override
-                public void onComplete(List<OfflineTileRegion> result) {
+            tileRegionLoadOptions,
+            progress -> Log.i("SearchApiExample", "Loading progress: " + progress),
+            region -> {
+                if (region.isValue()) {
                     Log.i("SearchApiExample", "Tiles successfully loaded");
 
                     searchRequestTask = searchEngine.reverseGeocoding(
                         new OfflineReverseGeoOptions(dcLocation),
                         searchCallback
                     );
-                }
-
-                @Override
-                public void onError(@NonNull Exception e) {
-                    Log.i("SearchApiExample", "Tiles loading error", e);
+                } else {
+                    Log.i("SearchApiExample", "Tiles loading error: " + region.getError());
                 }
             }
         );
