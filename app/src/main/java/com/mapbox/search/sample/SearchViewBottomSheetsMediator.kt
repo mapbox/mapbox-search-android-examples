@@ -1,12 +1,17 @@
 package com.mapbox.search.sample
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.Parcelable
+import com.mapbox.android.core.location.LocationEngineCallback
+import com.mapbox.android.core.location.LocationEngineResult
+import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.geojson.Point
 import com.mapbox.search.MapboxSearchSdk
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
+import com.mapbox.search.ui.view.feedback.SearchFeedbackBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlace
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
 import kotlinx.parcelize.Parcelize
@@ -19,8 +24,12 @@ import java.util.concurrent.CopyOnWriteArrayList
 class SearchViewBottomSheetsMediator(
     private val searchBottomSheetView: SearchBottomSheetView,
     private val placeBottomSheetView: SearchPlaceBottomSheetView,
-    private val categoriesBottomSheetView: SearchCategoriesBottomSheetView
+    private val categoriesBottomSheetView: SearchCategoriesBottomSheetView,
+    private val feedbackBottomSheetView: SearchFeedbackBottomSheetView,
 ) {
+
+    private val serviceProvider = MapboxSearchSdk.serviceProvider
+    private val context = searchBottomSheetView.context
 
     // Stack top points to currently open screen, if empty -> SearchBottomSheetView is open
     private val screensStack = LinkedList<Transaction>()
@@ -30,21 +39,25 @@ class SearchViewBottomSheetsMediator(
     init {
         with(searchBottomSheetView) {
             addOnCategoryClickListener { openCategory(it) }
-            addOnSearchResultClickListener { searchResult ->
+            addOnSearchResultClickListener { searchResult, responseInfo ->
                 val coordinate = searchResult.coordinate
                 if (coordinate != null) {
-                    openPlaceCard(SearchPlace.createFromSearchResult(searchResult, coordinate))
+                    openPlaceCard(
+                        SearchPlace.createFromSearchResult(
+                            searchResult = searchResult,
+                            responseInfo = responseInfo,
+                            coordinate = coordinate,
+                        )
+                    )
                 }
             }
             addOnFavoriteClickListener {
-                val distance = userDistanceTo(it.coordinate)
-                openPlaceCard(SearchPlace.createFromIndexableRecord(it, it.coordinate, distance))
+                openPlaceCard(SearchPlace.createFromIndexableRecord(it, it.coordinate, distanceMeters = null))
             }
             addOnHistoryClickListener { historyRecord ->
                 val coordinate = historyRecord.coordinate
                 if (coordinate != null) {
-                    val distance = userDistanceTo(coordinate)
-                    openPlaceCard(SearchPlace.createFromIndexableRecord(historyRecord, coordinate, distance))
+                    openPlaceCard(SearchPlace.createFromIndexableRecord(historyRecord, coordinate, distanceMeters = null))
                 } else {
                     // TODO: For now we don't support handling HistoryRecord without coordinates,
                     // because SDK adds records only that have coordinates. However, customers still can
@@ -60,6 +73,17 @@ class SearchViewBottomSheetsMediator(
                 }
             }
             addOnCloseClickListener { resetToRoot() }
+            addOnSearchPlaceAddedToFavoritesListener { searchPlace, favorite ->
+                val lastTransaction = screensStack.pollFirst()
+                if (lastTransaction != null && lastTransaction.screen == Screen.PLACE) {
+                    screensStack.push(Transaction(Screen.PLACE, searchPlace.copy(record = favorite)))
+                } else {
+                    screensStack.push(lastTransaction)
+                }
+            }
+            addOnFeedbackClickListener { _, feedback ->
+                feedbackBottomSheetView.open(feedback)
+            }
         }
 
         with(categoriesBottomSheetView) {
@@ -70,12 +94,22 @@ class SearchViewBottomSheetsMediator(
             }
 
             addOnCloseClickListener { resetToRoot() }
-            addOnSearchResultClickListener {
-                val coordinate = it.coordinate
+            addOnSearchResultClickListener { searchResult, responseInfo ->
+                val coordinate = searchResult.coordinate
                 if (coordinate != null) {
-                    openPlaceCard(SearchPlace.createFromSearchResult(it, coordinate))
+                    openPlaceCard(
+                        SearchPlace.createFromSearchResult(
+                            searchResult = searchResult,
+                            responseInfo = responseInfo,
+                            coordinate = coordinate,
+                        )
+                    )
                 }
             }
+        }
+
+        with(feedbackBottomSheetView) {
+            addOnCloseClickListener { resetToRoot() }
         }
     }
 
@@ -121,20 +155,23 @@ class SearchViewBottomSheetsMediator(
             screensStack.push(Transaction(Screen.PLACE, place.copy(distanceMeters = null)))
         }
 
-        val placeWithDistance = if (place.distanceMeters == null) {
-            place.copy(distanceMeters = userDistanceTo(place.coordinate))
-        } else {
-            place
-        }
-
-        placeBottomSheetView.open(placeWithDistance)
+        placeBottomSheetView.open(place)
         searchBottomSheetView.hide()
         categoriesBottomSheetView.hide()
-        eventsListeners.forEach { it.onOpenPlaceBottomSheet(placeWithDistance) }
+        eventsListeners.forEach { it.onOpenPlaceBottomSheet(place) }
+
+        if (place.distanceMeters == null) {
+            userDistanceTo(place.coordinate) { distance ->
+                distance?.let {
+                    placeBottomSheetView.updateDistance(distance)
+                }
+            }
+        }
     }
 
     private fun resetToRoot() {
         searchBottomSheetView.open()
+        feedbackBottomSheetView.hide()
         placeBottomSheetView.hide()
         categoriesBottomSheetView.hideCardAndCancelLoading()
         screensStack.clear()
@@ -188,6 +225,7 @@ class SearchViewBottomSheetsMediator(
     fun handleOnBackPressed(): Boolean {
         return searchBottomSheetView.handleOnBackPressed() ||
                 categoriesBottomSheetView.handleOnBackPressed() ||
+                feedbackBottomSheetView.handleOnBackPressed() ||
                 popBackStack()
     }
 
@@ -196,6 +234,41 @@ class SearchViewBottomSheetsMediator(
             throw IllegalStateException(assertMessage())
         }
         resetToRoot()
+    }
+
+    @SuppressLint("MissingPermission")
+    private fun lastKnownLocation(callback: (Point?) -> Unit) {
+        if (!PermissionsManager.areLocationPermissionsGranted(context)) {
+            callback(null)
+        }
+
+        serviceProvider.locationEngine().getLastLocation(object : LocationEngineCallback<LocationEngineResult> {
+            override fun onSuccess(result: LocationEngineResult?) {
+                val location = (result?.locations?.lastOrNull() ?: result?.lastLocation)?.let { location ->
+                    Point.fromLngLat(location.longitude, location.latitude)
+                }
+                callback(location)
+            }
+
+            override fun onFailure(p0: Exception) {
+                callback(null)
+            }
+        })
+    }
+
+    // Should work quit fast as we get last known location.
+    // If default Android Location Manager is used, callback will be triggered immediately.
+    private fun userDistanceTo(destination: Point, callback: (Double?) -> Unit) {
+        lastKnownLocation { location ->
+            if (location == null) {
+                callback(null)
+            } else {
+                val distance = serviceProvider
+                    .distanceCalculator(latitude = location.latitude())
+                    .distance(location, destination)
+                callback(distance)
+            }
+        }
     }
 
     fun addSearchBottomSheetsEventsListener(listener: SearchBottomSheetsEventsListener) {
@@ -223,15 +296,6 @@ class SearchViewBottomSheetsMediator(
     private companion object {
 
         const val KEY_STATE_EXTERNAL_BACK_STACK = "SearchViewBottomSheetsMediator.state.external.back_stack"
-
-        fun userDistanceTo(destination: Point): Double? {
-            val currentLocation = MapboxSearchSdk.serviceProvider.locationProvider().getLocation()
-            return currentLocation?.run {
-                MapboxSearchSdk.serviceProvider
-                    .distanceCalculator(latitude = latitude())
-                    .distance(this, destination)
-            }
-        }
 
         fun SearchCategoriesBottomSheetView.hideCardAndCancelLoading() {
             hide()

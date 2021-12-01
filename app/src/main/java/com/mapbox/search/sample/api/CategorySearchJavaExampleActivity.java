@@ -43,7 +43,7 @@ public class CategorySearchJavaExampleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        categorySearchEngine = MapboxSearchSdk.createCategorySearchEngine();
+        categorySearchEngine = MapboxSearchSdk.getCategorySearchEngine();
 
         final CategorySearchOptions options = new CategorySearchOptions.Builder()
             .limit(1)

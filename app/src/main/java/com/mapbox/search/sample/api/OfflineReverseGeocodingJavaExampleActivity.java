@@ -22,6 +22,7 @@ import com.mapbox.search.SearchRequestTask;
 import com.mapbox.search.result.SearchResult;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivity {
@@ -67,9 +68,7 @@ public class OfflineReverseGeocodingJavaExampleActivity extends AppCompatActivit
 
         final Point dcLocation = Point.fromLngLat(-77.0339911055176, 38.899920004207516);
 
-        final List<TilesetDescriptor> descriptors = new ArrayList<>();
-        descriptors.add(searchEngine.createBoundariesTilesetDescriptor());
-        descriptors.add(searchEngine.createTilesetDescriptor());
+        final List<TilesetDescriptor> descriptors = Collections.singletonList(searchEngine.createTilesetDescriptor());
 
         final TileRegionLoadOptions tileRegionLoadOptions = new TileRegionLoadOptions.Builder()
             .descriptors(descriptors)

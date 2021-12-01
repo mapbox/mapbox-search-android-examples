@@ -51,10 +51,7 @@ class OfflineReverseGeocodingKotlinExampleActivity : Activity() {
 
         val dcLocation = Point.fromLngLat(-77.0339911055176, 38.899920004207516)
 
-        val descriptors = mutableListOf(
-            searchEngine.createBoundariesTilesetDescriptor(),
-            searchEngine.createTilesetDescriptor()
-        )
+        val descriptors = listOf(searchEngine.createTilesetDescriptor())
 
         val tileRegionLoadOptions = TileRegionLoadOptions.Builder()
             .descriptors(descriptors)

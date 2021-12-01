@@ -69,7 +69,7 @@ public class ForwardGeocodingBatchResolvingJavaExampleActivity extends AppCompat
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        searchEngine = MapboxSearchSdk.createSearchEngine();
+        searchEngine = MapboxSearchSdk.getSearchEngine();
 
         final SearchOptions options = new SearchOptions.Builder()
             .build();

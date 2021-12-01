@@ -2,8 +2,11 @@ package com.mapbox.search.sample.api;
 
 import android.os.Bundle;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.mapbox.geojson.Point;
 import com.mapbox.search.AsyncOperationTask;
 import com.mapbox.search.CompletionCallback;
@@ -28,7 +31,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
-import androidx.annotation.NonNull;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Executor;
@@ -81,7 +83,7 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        searchEngine = MapboxSearchSdk.createSearchEngine();
+        searchEngine = MapboxSearchSdk.getSearchEngine();
 
         Log.i("SearchApiExample", "Start CustomDataProvider registering...");
         registerProviderTask = MapboxSearchSdk.getServiceProvider().globalDataProvidersRegistry().register(
@@ -267,6 +269,9 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
             @NonNull Executor executor,
             @NonNull CompletionCallback<Unit> callback
         ) {
+            for (IndexableDataProviderEngineLayer layer : dataProviderEngineLayers) {
+                layer.add(record);
+            }
             records.put(record.getId(), record);
             executor.execute(() -> callback.onComplete(Unit.INSTANCE));
             return CompletedAsyncOperationTask.getInstance();
@@ -285,7 +290,10 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
             @NonNull Executor executor,
             @NonNull CompletionCallback<Unit> callback
         ) {
-            for (R record: records) {
+            for (IndexableDataProviderEngineLayer layer : dataProviderEngineLayers) {
+                layer.addAll(records);
+            }
+            for (R record : records) {
                 this.records.put(record.getId(), record);
             }
             executor.execute(() -> callback.onComplete(Unit.INSTANCE));
@@ -305,6 +313,9 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
             @NonNull Executor executor,
             @NonNull CompletionCallback<Unit> callback
         ) {
+            for (IndexableDataProviderEngineLayer layer : dataProviderEngineLayers) {
+                layer.update(record);
+            }
             records.put(record.getId(), record);
             executor.execute(() -> callback.onComplete(Unit.INSTANCE));
             return CompletedAsyncOperationTask.getInstance();
@@ -323,6 +334,9 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
             @NonNull Executor executor,
             @NonNull CompletionCallback<Boolean> callback
         ) {
+            for (IndexableDataProviderEngineLayer layer : dataProviderEngineLayers) {
+                layer.remove(id);
+            }
             boolean isRemoved = records.remove(id) != null;
             executor.execute(() -> callback.onComplete(isRemoved));
             return CompletedAsyncOperationTask.getInstance();
@@ -337,6 +351,9 @@ public class CustomIndexableDataProviderJavaExample extends AppCompatActivity {
         @NonNull
         @Override
         public AsyncOperationTask clear(@NonNull Executor executor, @NonNull CompletionCallback<Unit> callback) {
+            for (IndexableDataProviderEngineLayer layer : dataProviderEngineLayers) {
+                layer.clear();
+            }
             records.clear();
             executor.execute(() -> callback.onComplete(Unit.INSTANCE));
             return CompletedAsyncOperationTask.getInstance();

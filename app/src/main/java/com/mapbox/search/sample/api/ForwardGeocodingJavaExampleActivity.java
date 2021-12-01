@@ -55,7 +55,7 @@ public class ForwardGeocodingJavaExampleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        searchEngine = MapboxSearchSdk.createSearchEngine();
+        searchEngine = MapboxSearchSdk.getSearchEngine();
 
         final SearchOptions options = new SearchOptions.Builder()
             .limit(5)

@@ -51,7 +51,7 @@ class ForwardGeocodingKotlinExampleActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        searchEngine = MapboxSearchSdk.createSearchEngine()
+        searchEngine = MapboxSearchSdk.getSearchEngine()
 
         searchRequestTask = searchEngine.search(
             "Paris Eiffel Tower",
