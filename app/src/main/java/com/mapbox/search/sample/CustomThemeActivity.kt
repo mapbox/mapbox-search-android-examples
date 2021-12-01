@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
+import com.mapbox.search.ui.view.feedback.SearchFeedbackBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
 
 class CustomThemeActivity : AppCompatActivity() {
@@ -16,6 +17,7 @@ class CustomThemeActivity : AppCompatActivity() {
     private lateinit var searchBottomSheetView: SearchBottomSheetView
     private lateinit var searchPlaceView: SearchPlaceBottomSheetView
     private lateinit var searchCategoriesView: SearchCategoriesBottomSheetView
+    private lateinit var feedbackBottomSheetView: SearchFeedbackBottomSheetView
 
     private lateinit var cardsMediator: SearchViewBottomSheetsMediator
 
@@ -30,10 +32,14 @@ class CustomThemeActivity : AppCompatActivity() {
         searchPlaceView = findViewById(R.id.search_place_view)
         searchCategoriesView = findViewById(R.id.search_categories_view)
 
+        feedbackBottomSheetView = findViewById(R.id.search_feedback_view)
+        feedbackBottomSheetView.initialize(savedInstanceState)
+
         cardsMediator = SearchViewBottomSheetsMediator(
             searchBottomSheetView,
             searchPlaceView,
-            searchCategoriesView
+            searchCategoriesView,
+            feedbackBottomSheetView,
         )
 
         savedInstanceState?.let {

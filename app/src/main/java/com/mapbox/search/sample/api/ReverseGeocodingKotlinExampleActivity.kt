@@ -35,7 +35,7 @@ class ReverseGeocodingKotlinExampleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        reverseGeocoding = MapboxSearchSdk.createReverseGeocodingSearchEngine()
+        reverseGeocoding = MapboxSearchSdk.getReverseGeocodingSearchEngine()
 
         val options = ReverseGeoOptions(
             center = Point.fromLngLat(2.294434, 48.858349),

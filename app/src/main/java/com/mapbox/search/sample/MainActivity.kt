@@ -38,6 +38,7 @@ import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.SearchMode
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
+import com.mapbox.search.ui.view.feedback.SearchFeedbackBottomSheetView
 import com.mapbox.search.ui.view.place.SearchPlace
 import com.mapbox.search.ui.view.place.SearchPlaceBottomSheetView
 
@@ -46,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var searchBottomSheetView: SearchBottomSheetView
     private lateinit var searchPlaceView: SearchPlaceBottomSheetView
     private lateinit var searchCategoriesView: SearchCategoriesBottomSheetView
+    private lateinit var feedbackBottomSheetView: SearchFeedbackBottomSheetView
 
     private lateinit var cardsMediator: SearchViewBottomSheetsMediator
 
@@ -72,12 +74,17 @@ class MainActivity : AppCompatActivity() {
         searchBottomSheetView.searchMode = SearchMode.AUTO
 
         searchPlaceView = findViewById(R.id.search_place_view)
+
         searchCategoriesView = findViewById(R.id.search_categories_view)
+
+        feedbackBottomSheetView = findViewById(R.id.search_feedback_view)
+        feedbackBottomSheetView.initialize(savedInstanceState)
 
         cardsMediator = SearchViewBottomSheetsMediator(
             searchBottomSheetView,
             searchPlaceView,
-            searchCategoriesView
+            searchCategoriesView,
+            feedbackBottomSheetView,
         )
 
         savedInstanceState?.let {
@@ -95,7 +102,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Process bottom sheets events
-        @Suppress("EmptyFunctionBlock")
         cardsMediator.addSearchBottomSheetsEventsListener(object : SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener {
             override fun onOpenPlaceBottomSheet(place: SearchPlace) {}
 

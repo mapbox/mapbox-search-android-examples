@@ -34,7 +34,7 @@ class CategorySearchKotlinExampleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        categorySearchEngine = MapboxSearchSdk.createCategorySearchEngine()
+        categorySearchEngine = MapboxSearchSdk.getCategorySearchEngine()
 
         searchRequestTask = categorySearchEngine.search(
             "cafe",

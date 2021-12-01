@@ -73,7 +73,7 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        searchEngine = MapboxSearchSdk.createSearchEngine()
+        searchEngine = MapboxSearchSdk.getSearchEngine()
 
         Log.i("SearchApiExample", "Start CustomDataProvider registering...")
         registerProviderTask = MapboxSearchSdk.serviceProvider.globalDataProvidersRegistry().register(
@@ -200,6 +200,9 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
         }
 
         override fun add(record: R, executor: Executor, callback: CompletionCallback<Unit>): AsyncOperationTask {
+            dataProviderEngineLayers.forEach {
+                it.add(record)
+            }
             records[record.id] = record
             executor.execute {
                 callback.onComplete(Unit)
@@ -212,6 +215,9 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
             executor: Executor,
             callback: CompletionCallback<Unit>
         ): AsyncOperationTask {
+            dataProviderEngineLayers.forEach {
+                it.addAll(records)
+            }
             for (record in records) {
                 this.records[record.id] = record
             }
@@ -222,6 +228,9 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
         }
 
         override fun update(record: R, executor: Executor, callback: CompletionCallback<Unit>): AsyncOperationTask {
+            dataProviderEngineLayers.forEach {
+                it.update(record)
+            }
             records[record.id] = record
             executor.execute {
                 callback.onComplete(Unit)
@@ -230,6 +239,9 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
         }
 
         override fun remove(id: String, executor: Executor, callback: CompletionCallback<Boolean>): AsyncOperationTask {
+            dataProviderEngineLayers.forEach {
+                it.remove(id)
+            }
             val isRemoved = records.remove(id) != null
             executor.execute {
                 callback.onComplete(isRemoved)
@@ -238,6 +250,9 @@ class CustomIndexableDataProviderKotlinExample : AppCompatActivity() {
         }
 
         override fun clear(executor: Executor, callback: CompletionCallback<Unit>): AsyncOperationTask {
+            dataProviderEngineLayers.forEach {
+                it.clear()
+            }
             records.clear()
             executor.execute {
                 callback.onComplete(Unit)

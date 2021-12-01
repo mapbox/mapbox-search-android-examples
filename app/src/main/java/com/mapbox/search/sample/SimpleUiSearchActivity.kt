@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.isVisible
+import com.mapbox.search.ResponseInfo
 import com.mapbox.search.record.HistoryRecord
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.result.SearchSuggestion
@@ -27,7 +28,7 @@ class SimpleUiSearchActivity : AppCompatActivity() {
         }
 
         searchResultsView.addSearchListener(object : SearchResultsView.SearchListener {
-            override fun onSearchResult(searchResult: SearchResult) {
+            override fun onSearchResult(searchResult: SearchResult, responseInfo: ResponseInfo) {
                 Toast.makeText(applicationContext, "Search result: $searchResult", Toast.LENGTH_SHORT).show()
             }
 
@@ -37,10 +38,14 @@ class SimpleUiSearchActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onPopulateQueryClicked(suggestion: SearchSuggestion) {
+            override fun onPopulateQueryClicked(suggestion: SearchSuggestion, responseInfo: ResponseInfo) {
                 if (::searchView.isInitialized) {
                     searchView.setQuery(suggestion.name, true)
                 }
+            }
+
+            override fun onFeedbackClicked(responseInfo: ResponseInfo) {
+                // Not implemented
             }
         })
 

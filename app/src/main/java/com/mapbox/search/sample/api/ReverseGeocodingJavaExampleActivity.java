@@ -44,7 +44,7 @@ public class ReverseGeocodingJavaExampleActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        reverseGeocoding = MapboxSearchSdk.createReverseGeocodingSearchEngine();
+        reverseGeocoding = MapboxSearchSdk.getReverseGeocodingSearchEngine();
 
         final ReverseGeoOptions options = new ReverseGeoOptions.Builder(Point.fromLngLat(2.294434, 48.858349))
             .limit(1)
