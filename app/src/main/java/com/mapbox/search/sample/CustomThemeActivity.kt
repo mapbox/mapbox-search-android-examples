@@ -7,6 +7,8 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.mapbox.search.ui.view.CommonSearchViewConfiguration
+import com.mapbox.search.ui.view.DistanceUnitType
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
 import com.mapbox.search.ui.view.feedback.SearchFeedbackBottomSheetView
@@ -30,7 +32,10 @@ class CustomThemeActivity : AppCompatActivity() {
         searchBottomSheetView.initializeSearch(savedInstanceState, SearchBottomSheetView.Configuration())
 
         searchPlaceView = findViewById(R.id.search_place_view)
+        searchPlaceView.initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
+
         searchCategoriesView = findViewById(R.id.search_categories_view)
+        searchCategoriesView.initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
 
         feedbackBottomSheetView = findViewById(R.id.search_feedback_view)
         feedbackBottomSheetView.initialize(savedInstanceState)

@@ -33,6 +33,8 @@ import com.mapbox.search.result.SearchResult
 import com.mapbox.search.sample.R
 import com.mapbox.search.sample.SearchViewBottomSheetsMediator
 import com.mapbox.search.sample.SearchViewBottomSheetsMediator.SearchBottomSheetsEventsListener
+import com.mapbox.search.ui.view.CommonSearchViewConfiguration
+import com.mapbox.search.ui.view.DistanceUnitType
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.category.Category
 import com.mapbox.search.ui.view.category.SearchCategoriesBottomSheetView
@@ -89,12 +91,15 @@ class MapsIntegrationExampleActivity : AppCompatActivity() {
         searchBottomSheetView.initializeSearch(savedInstanceState, SearchBottomSheetView.Configuration())
 
         searchPlaceView = findViewById<SearchPlaceBottomSheetView>(R.id.search_place_view).apply {
+            initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
+
             isNavigateButtonVisible = false
             isShareButtonVisible = false
             isFavoriteButtonVisible = false
         }
 
         searchCategoriesView = findViewById(R.id.search_categories_view)
+        searchCategoriesView.initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
 
         feedbackBottomSheetView = findViewById(R.id.search_feedback_view)
         feedbackBottomSheetView.initialize(savedInstanceState)
