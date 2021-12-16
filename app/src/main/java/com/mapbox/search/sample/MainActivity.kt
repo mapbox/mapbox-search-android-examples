@@ -34,6 +34,8 @@ import com.mapbox.search.sample.api.OfflineSearchKotlinExampleActivity
 import com.mapbox.search.sample.api.ReverseGeocodingJavaExampleActivity
 import com.mapbox.search.sample.api.ReverseGeocodingKotlinExampleActivity
 import com.mapbox.search.sample.maps.MapsIntegrationExampleActivity
+import com.mapbox.search.ui.view.CommonSearchViewConfiguration
+import com.mapbox.search.ui.view.DistanceUnitType
 import com.mapbox.search.ui.view.SearchBottomSheetView
 import com.mapbox.search.ui.view.SearchMode
 import com.mapbox.search.ui.view.category.Category
@@ -74,8 +76,10 @@ class MainActivity : AppCompatActivity() {
         searchBottomSheetView.searchMode = SearchMode.AUTO
 
         searchPlaceView = findViewById(R.id.search_place_view)
+        searchPlaceView.initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
 
         searchCategoriesView = findViewById(R.id.search_categories_view)
+        searchCategoriesView.initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
 
         feedbackBottomSheetView = findViewById(R.id.search_feedback_view)
         feedbackBottomSheetView.initialize(savedInstanceState)

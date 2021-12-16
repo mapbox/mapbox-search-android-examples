@@ -12,6 +12,8 @@ import com.mapbox.search.ResponseInfo
 import com.mapbox.search.record.HistoryRecord
 import com.mapbox.search.result.SearchResult
 import com.mapbox.search.result.SearchSuggestion
+import com.mapbox.search.ui.view.CommonSearchViewConfiguration
+import com.mapbox.search.ui.view.DistanceUnitType
 import com.mapbox.search.ui.view.SearchResultsView
 
 class SimpleUiSearchActivity : AppCompatActivity() {
@@ -24,6 +26,7 @@ class SimpleUiSearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_simple_ui)
 
         searchResultsView = findViewById<SearchResultsView>(R.id.search_results_view).apply {
+            initialize(CommonSearchViewConfiguration(DistanceUnitType.IMPERIAL))
             isVisible = false
         }
 
